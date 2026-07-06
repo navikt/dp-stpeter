@@ -1,22 +1,17 @@
-pluginManagement {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
-
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
-
 dependencyResolutionManagement {
     repositories {
-        mavenCentral()
+        maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
     }
     versionCatalogs {
-        create("ktorLibs").from("io.ktor:ktor-version-catalog:3.5.0")
+        create("libs") {
+            from("no.nav.dagpenger:dp-version-catalog:20260516.254.df0c40")
+        }
     }
 }
 
 rootProject.name = "dp-stpeter"
 
+include("mediator")
