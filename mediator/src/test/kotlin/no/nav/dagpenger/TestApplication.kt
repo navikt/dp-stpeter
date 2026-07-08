@@ -29,6 +29,7 @@ object TestApplication {
                 OAuth2Config.AzureAd.CLIENT_ID_KEY to CLIENT_ID,
                 OAuth2Config.AzureAd.CLIENT_SECRET_KEY to "clientSecret",
                 OAuth2Config.AzureAd.TOKEN_ENDPOINT_KEY to mockOAuth2Server.tokenEndpointUrl("default").toString(),
+                "TILGANGSMASKIN_API_SCOPE" to "scope",
             ),
         )
 

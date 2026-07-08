@@ -2,6 +2,8 @@ package no.nav.dagpenger.tilgangsmaskin
 
 import com.natpryce.konfig.Configuration
 import com.natpryce.konfig.ConfigurationMap
+import com.natpryce.konfig.Key
+import com.natpryce.konfig.stringType
 import no.nav.dagpenger.oauth2.CachedOauth2Client
 import no.nav.dagpenger.oauth2.OAuth2Config
 
@@ -25,7 +27,7 @@ class TokenProvider {
     }
 
     val oboExchanger: (String) -> String by lazy {
-        val scope = "scope"
+        val scope = configuration[Key("TILGANGSMASKIN_API_SCOPE", stringType)]
         { token: String ->
             val accessToken =
                 azureAdClient
