@@ -55,7 +55,7 @@ jobs:
       - uses: actions/checkout@v7.0.0
       - uses: nais/deploy/actions/deploy@v2
         env:
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: .nais/nais.yaml
           VAR: image=${{ needs.build.outputs.image }}
           VARS: .nais/vars-dev.yaml

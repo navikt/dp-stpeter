@@ -81,7 +81,7 @@ spec:
       rules:
         - application: dp-arena-gw
           namespace: teamdagpenger
-          cluster: fss-dev
+          cluster: dev-fss
         {{#if wonderwalled}}
         - application: azure-token-generator
           namespace: nais
