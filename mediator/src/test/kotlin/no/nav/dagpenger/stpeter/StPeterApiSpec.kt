@@ -28,7 +28,6 @@ class StPeterApiSpec :
                     withMockAuthServerAndTestApplication(this.api) {
                         val token =
                             testAzureAdToken(
-                                ADGrupper = listOf("test"),
                                 navIdent = "Z123456",
                             )
                         client
@@ -55,7 +54,6 @@ class StPeterApiSpec :
                     withMockAuthServerAndTestApplication(this.api) {
                         val token =
                             testAzureAdToken(
-                                ADGrupper = listOf("test"),
                                 navIdent = "Z123456",
                             )
                         client
@@ -81,7 +79,6 @@ class StPeterApiSpec :
                 withMockAuthServerAndTestApplication(this.api) {
                     val token =
                         testAzureAdToken(
-                            ADGrupper = listOf("test"),
                             navIdent = "Z123456",
                         )
                     client
@@ -107,7 +104,7 @@ class StPeterApiSpec :
                 withMockAuthServerAndTestApplication(this.api) {
                     val token =
                         testAzureAdToken(
-                            ADGrupper = listOf("feil-gruppe"),
+                            adGrupper = listOf("feil-gruppe"),
                             navIdent = "Z123456",
                         )
                     client
@@ -131,11 +128,6 @@ class StPeterApiSpec :
         "skal gi 401 ved manglende token" {
             StPeterSystem.avvisScenario().test {
                 withMockAuthServerAndTestApplication(this.api) {
-                    val token =
-                        testAzureAdToken(
-                            ADGrupper = listOf("test"),
-                            navIdent = "Z123456",
-                        )
                     client
                         .post {
                             url("/api/v1/person")
@@ -158,7 +150,6 @@ class StPeterApiSpec :
                 withMockAuthServerAndTestApplication(this.api) {
                     val token =
                         testAzureAdToken(
-                            ADGrupper = listOf("test"),
                             navIdent = "Z123456",
                         )
                     client
@@ -184,7 +175,6 @@ class StPeterApiSpec :
                 withMockAuthServerAndTestApplication(this.api) {
                     val token =
                         testAzureAdToken(
-                            ADGrupper = listOf("test"),
                             navIdent = "Z123456",
                         )
                     client

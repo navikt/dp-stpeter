@@ -21,6 +21,7 @@ object TestApplication {
 
     const val AZURE_AD_ISSUER_ID = "azureAd"
     const val CLIENT_ID = "clientId"
+    const val SAKSBEHANDLER_GRUPPE = "saksbehandler-gruppe"
 
     val tokenProvider =
         TokenProvider(
@@ -32,7 +33,7 @@ object TestApplication {
         )
 
     fun testAzureAdToken(
-        ADGrupper: List<String>,
+        adGrupper: List<String> = listOf(SAKSBEHANDLER_GRUPPE),
         navIdent: String,
     ): String =
         mockOAuth2Server
@@ -42,7 +43,7 @@ object TestApplication {
                 claims =
                     mapOf(
                         "NAVident" to navIdent,
-                        "groups" to ADGrupper,
+                        "groups" to adGrupper,
                     ),
             ).serialize()
 

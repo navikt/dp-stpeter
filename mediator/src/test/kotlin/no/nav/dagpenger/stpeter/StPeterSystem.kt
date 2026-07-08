@@ -1,17 +1,26 @@
 package no.nav.dagpenger.stpeter
 
 import com.natpryce.konfig.ConfigurationMap
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
+import io.ktor.serialization.jackson3.JacksonConverter
 import io.ktor.server.application.Application
 import no.nav.dagpenger.TestApplication.AZURE_AD_ISSUER_ID
 import no.nav.dagpenger.TestApplication.CLIENT_ID
+import no.nav.dagpenger.TestApplication.SAKSBEHANDLER_GRUPPE
 import no.nav.dagpenger.TestApplication.mockOAuth2Server
 import no.nav.dagpenger.TestApplication.tokenProvider
 import no.nav.dagpenger.api.auth.AuthFactory
 import no.nav.dagpenger.api.auth.AuthFactory.azure_app
 import no.nav.dagpenger.konfigurasjon.Configuration
+import no.nav.dagpenger.objectMapper
 import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinClient
-import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinSystem
 
 class StPeterSystem(
     val oppsett: ScenarioOptions,
@@ -23,7 +32,7 @@ class StPeterSystem(
                 status = HttpStatusCode.NoContent,
             )
 
-        fun avvisScenario(block: ScenarioOptions.() -> Unit = { }) =
+        fun avvisScenario() =
             ScenarioOptions(
                 // language=json
                 content =
@@ -41,9 +50,9 @@ class StPeterSystem(
                     }
                     """.trimIndent(),
                 status = HttpStatusCode.Unauthorized,
-            ).apply(block)
+            )
 
-        fun navIdentIkkeFunnetScenario(block: ScenarioOptions.() -> Unit = { }) =
+        fun navIdentIkkeFunnetScenario() =
             ScenarioOptions(
                 // language=json
                 content =
@@ -57,15 +66,30 @@ class StPeterSystem(
                     }
                     """.trimIndent(),
                 status = HttpStatusCode.NotFound,
-            ).apply(block)
+            )
     }
+
+    private val mockEngine =
+        MockEngine { _ ->
+            respond(
+                content = oppsett.content,
+                status = oppsett.status,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+
+    private val httpClient =
+        HttpClient(mockEngine) {
+            install(ContentNegotiation) {
+                register(ContentType.Application.Json, JacksonConverter(objectMapper))
+            }
+        }
 
     private val authFactory =
         AuthFactory(
             ConfigurationMap(
                 mapOf(
-                    Configuration.Grupper.saksbehandler.name to "test",
-                    // Configuration.Maskintilgang.navn.name to oppsett,
+                    Configuration.Grupper.saksbehandler.name to SAKSBEHANDLER_GRUPPE,
                     azure_app.client_id.name to CLIENT_ID,
                     azure_app.well_known_url.name to "${
                         mockOAuth2Server.wellKnownUrl(
@@ -76,20 +100,11 @@ class StPeterSystem(
             ),
         )
 
-    val tilgangsmaskinSystem =
-        TilgangsmaskinSystem(
-            oppsett =
-                TilgangsmaskinSystem.ScenarioOptions().apply {
-                    content = oppsett.content
-                    status = oppsett.status
-                },
-        )
-
-    val tilgangsmaskinClient =
+    private val tilgangsmaskinClient =
         TilgangsmaskinClient(
             tilgangsMaskinApiUrl = "http://localhost",
             tokenProvider = tokenProvider.oboExchanger,
-            httpClient = tilgangsmaskinSystem.httpClient,
+            httpClient = httpClient,
         )
 
     val api: Application.() -> Unit = { stpeterApi(authFactory, tilgangsmaskinClient) }
