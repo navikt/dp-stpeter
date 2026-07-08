@@ -5,6 +5,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.request.receive
+import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
@@ -46,10 +47,14 @@ internal fun Application.stpeterApi(
                             token = call.token(),
                         )
 
-                    call.respond(
-                        status = HttpStatusCode.fromValue(tilgangTilPersonKomplett.status),
-                        message = tilgangTilPersonKomplett.reason ?: "",
-                    )
+                    val status = HttpStatusCode.fromValue(tilgangTilPersonKomplett.status)
+                    val problem = tilgangTilPersonKomplett.reason
+                    if (problem == null) {
+                        call.respond(status)
+                    } else {
+                        call.response.header("Content-Type", "application/problem+json")
+                        call.respond(status = status, message = problem)
+                    }
                 }
             }
         }

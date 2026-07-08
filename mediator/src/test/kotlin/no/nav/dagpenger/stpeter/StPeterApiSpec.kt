@@ -35,7 +35,7 @@ class StPeterApiSpec :
                                 url("/api/v1/person")
                                 setBody("""{"ident":"12345678901"}""")
                                 this.header(HttpHeaders.Authorization, "Bearer $token")
-                                this.header(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                                this.header(HttpHeaders.Accept, "application/problem+json")
                                 this.header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                             }.apply {
                                 status.value shouldBe 204
@@ -61,7 +61,7 @@ class StPeterApiSpec :
                                 url("/api/v1/person")
                                 setBody("""{"ident":"12345678901"}""")
                                 this.header(HttpHeaders.Authorization, "Bearer $token")
-                                this.header(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                                this.header(HttpHeaders.Accept, "application/problem+json")
                                 this.header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                             }.apply {
                                 status.value shouldBe 404
@@ -86,7 +86,7 @@ class StPeterApiSpec :
                             url("/api/v1/person")
                             setBody("""{"ident":"12345678901"}""")
                             this.header(HttpHeaders.Authorization, "Bearer $token")
-                            this.header(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                            this.header(HttpHeaders.Accept, "application/problem+json")
                             this.header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         }.apply {
                             status.value shouldBe 403
@@ -112,7 +112,7 @@ class StPeterApiSpec :
                             url("/api/v1/person")
                             setBody("""{"ident":"12345678901"}""")
                             this.header(HttpHeaders.Authorization, "Bearer $token")
-                            this.header(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                            this.header(HttpHeaders.Accept, "application/problem+json")
                             this.header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         }.apply {
                             status.value shouldBe 401
@@ -132,7 +132,7 @@ class StPeterApiSpec :
                         .post {
                             url("/api/v1/person")
                             setBody("""{"ident":"12345678901"}""")
-                            this.header(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                            this.header(HttpHeaders.Accept, "application/problem+json")
                             this.header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         }.apply {
                             status.value shouldBe 401
@@ -157,7 +157,7 @@ class StPeterApiSpec :
                             url("/api/v1/person")
                             setBody("""{"ident":"123456789"}""")
                             this.header(HttpHeaders.Authorization, "Bearer $token")
-                            this.header(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                            this.header(HttpHeaders.Accept, "application/problem+json")
                             this.header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         }.apply {
                             status.value shouldBe 422
@@ -181,7 +181,7 @@ class StPeterApiSpec :
                         .post {
                             url("/api/v1/person")
                             this.header(HttpHeaders.Authorization, "Bearer $token")
-                            this.header(HttpHeaders.Accept, ContentType.Application.Json.toString())
+                            this.header(HttpHeaders.Accept, "application/problem+json")
                             this.header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
                         }.apply {
                             status.value shouldBe 400
