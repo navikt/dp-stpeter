@@ -42,24 +42,24 @@ jobs:
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
-#  deploy-dev:
-#    name: Deploy to dev
-#    needs: [ build ]
-#    if: github.ref == 'refs/heads/main'
-#    runs-on: ubuntu-latest
-#    environment: dev-fss
-#    permissions:
-#      contents: "read"
-#      id-token: "write"
-#    steps:
-#      - uses: actions/checkout@v7.0.0
-#      - uses: nais/deploy/actions/deploy@v2
-#        env:
-#          CLUSTER: dev-fss
-#          RESOURCE: .nais/nais.yaml
-#          VAR: image=${{ needs.build.outputs.image }}
-#          VARS: .nais/vars-dev.yaml
-#          PRINT_PAYLOAD: true
+  deploy-dev:
+    name: Deploy to dev
+    needs: [ build ]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: dev-fss
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-fss
+          RESOURCE: .nais/nais.yaml
+          VAR: image=${{ needs.build.outputs.image }}
+          VARS: .nais/vars-dev.yaml
+          PRINT_PAYLOAD: true
 #
 #  deploy-prod:
 #    name: Deploy to Production
