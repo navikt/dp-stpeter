@@ -12,9 +12,9 @@ dependencies {
 //    implementation("tools.jackson.module:jackson-module-blackbird:${libs.versions.jackson.get()}")
 //
 //    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.3")
-//
+    implementation(libs.kotlin.logging)
+
 //    implementation(libs.konfig)
-//    implementation(libs.kotlin.logging)
 //    implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.1.0")
 //    implementation("io.opentelemetry:opentelemetry-api:1.36.0")
 //    implementation("io.prometheus:prometheus-metrics-core:1.3.1")

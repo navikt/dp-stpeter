@@ -1,5 +1,6 @@
 package no.nav.dagpenger.tilgangsmaskin
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.accept
@@ -17,6 +18,10 @@ class TilgangsmaskinClient(
     val tokenProvider: suspend (String) -> String,
     val httpClient: HttpClient,
 ) : TilgangsmaskinClientInterface {
+    companion object {
+        private val sikkerlogg = KotlinLogging.logger("tjenestekall")
+    }
+
     override fun harTilgangTilPersonKomplett(
         ident: String,
         token: String,
@@ -43,9 +48,12 @@ class TilgangsmaskinClient(
                             accept(ContentType.Application.Json)
                             setBody(ident)
                         }
+                sikkerlogg.info { "Tilgangsmaskin returnerte ${post.status}" }
                 when (post.status) {
                     HttpStatusCode.Unauthorized -> {
-                        post.body<TilgangsmaskinResponse.TilgangAvvist>()
+                        val body = post.body<TilgangsmaskinResponse.TilgangAvvist>()
+                        sikkerlogg.info { "\nBegrunnelse ${body.title}" }
+                        body
                     }
 
                     HttpStatusCode.NoContent -> {
@@ -55,7 +63,9 @@ class TilgangsmaskinClient(
                     }
 
                     HttpStatusCode.NotFound -> {
-                        post.body<TilgangsmaskinResponse.NavIdentIkkeFunnet>()
+                        val body = post.body<TilgangsmaskinResponse.NavIdentIkkeFunnet>()
+                        sikkerlogg.info { "\nBegrunnelse ${body.detail}" }
+                        body
                     }
 
                     else -> {
