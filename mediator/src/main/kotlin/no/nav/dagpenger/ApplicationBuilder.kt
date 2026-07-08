@@ -6,6 +6,9 @@ import io.ktor.server.engine.EmbeddedServer
 import no.nav.dagpenger.api.apiConfig
 import no.nav.dagpenger.api.auth.AuthFactory
 import no.nav.dagpenger.konfigurasjon.Configuration
+import no.nav.dagpenger.konfigurasjon.Configuration.tilgangsMaskinApiUrl
+import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinClient
+import no.nav.dagpenger.tilgangsmaskin.TokenProvider
 
 internal class ApplicationBuilder(
     config: Map<String, String>,
@@ -13,6 +16,18 @@ internal class ApplicationBuilder(
     companion object {
         private val log = KotlinLogging.logger { }
     }
+
+    private val tokenProvider = TokenProvider(config)
+
+    private val tilgangsmaskinClient =
+        TilgangsmaskinClient(
+            tilgangsMaskinApiUrl = tilgangsMaskinApiUrl,
+            tokenProvider = tokenProvider.oboExchanger,
+            httpClient =
+                createHttpClient(
+                    metricsBaseName = "dp_stpeter_tilgangsmaskin_client",
+                ),
+        )
 
     private val server: EmbeddedServer<CIOApplicationEngine, CIOApplicationEngine.Configuration> =
         ktorApplication(
@@ -22,7 +37,7 @@ internal class ApplicationBuilder(
             cioConfiguration = {
             },
             configuration = {
-                apiConfig(AuthFactory(Configuration.properties))
+                apiConfig(AuthFactory(Configuration.properties), tilgangsmaskinClient)
             },
         )
 

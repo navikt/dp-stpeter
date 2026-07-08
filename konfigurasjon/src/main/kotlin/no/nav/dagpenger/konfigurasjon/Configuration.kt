@@ -3,6 +3,7 @@ package no.nav.dagpenger.konfigurasjon
 import com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties
 import com.natpryce.konfig.EnvironmentVariables
+import com.natpryce.konfig.Key
 import com.natpryce.konfig.PropertyGroup
 import com.natpryce.konfig.getValue
 import com.natpryce.konfig.overriding
@@ -19,6 +20,8 @@ object Configuration {
     object Grupper : PropertyGroup() {
         val saksbehandler by stringType
     }
+
+    val tilgangsMaskinApiUrl by lazy { properties[Key("TILGANGSMASKIN_API_URL", stringType)] }
 
     val properties =
         ConfigurationProperties.systemProperties() overriding EnvironmentVariables() overriding defaultProperties

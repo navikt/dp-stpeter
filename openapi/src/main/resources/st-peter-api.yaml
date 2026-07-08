@@ -11,9 +11,53 @@ servers:
 #  - url: https://dp-st-peter.intern.nav.no
 #    description: prod
 paths:
+  /api/person:
+    post:
+      summary: Sjekk saksbehandlers tilgang til bruker
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IdentForesporsel"
+      tags:
+        - Brukertilgang
+      security:
+        - azureAd: [ ]
+      responses:
+        "204":
+          description: Saksbehandler har tilgang til bruker
+        "403":
+          description: Saksbehandler har ikke tilgang til bruker
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpProblem"
+        "404":
+          description: NavIdent ikke funnet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HttpProblem"
+        default:
+          description: Feil ved henting av brukertilgang
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/HttpProblem"
 
 components:
   schemas:
+
+    IdentForesporsel:
+      type: object
+      required:
+        - ident
+      properties:
+        ident:
+          description: Fødselsnummer eller D-nummer til en person. Må være 11 siffer.
+          type: string
+          pattern: "^[0-9]{11}$"
 
     HttpProblem:
       type: object

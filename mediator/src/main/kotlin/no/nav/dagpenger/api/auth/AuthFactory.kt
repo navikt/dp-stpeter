@@ -36,18 +36,6 @@ class AuthFactory(
         }
     }
 
-//    enum class Issuer {
-//        AzureAD,
-//    }
-//
-//    fun issuerFromString(issuer: String?) =
-//        when (issuer) {
-//            azureAdConfiguration.issuer -> Issuer.AzureAD
-//            else -> {
-//                throw IllegalArgumentException("Ikke støttet issuer: $issuer")
-//            }
-//        }
-
     fun JWTAuthenticationProvider.Config.azureAd() {
         val saksbehandlerGruppe = properties[Configuration.Grupper.saksbehandler]
         // val apper: List<String> = properties[Configuration.Maskintilgang.navn]
@@ -55,13 +43,6 @@ class AuthFactory(
         verifiserTokenFormatOgSignatur()
         autoriser(saksbehandlerGruppe, emptyList())
     }
-
-//    fun JWTAuthenticationProvider.Config.adminTilgang() {
-//        val adminGrupper = properties[Configuration.Grupper.admin]
-//        realm = Configuration.APP_NAME
-//        verifiserTokenFormatOgSignatur()
-//        autoriserAdminTilgang(adminGrupper)
-//    }
 
     private fun JWTAuthenticationProvider.Config.verifiserTokenFormatOgSignatur() {
         verifier(

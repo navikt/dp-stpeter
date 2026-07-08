@@ -7,13 +7,18 @@ plugins {
 
 dependencies {
 
+    val dpBibliotekerVersion = "2026.05.04-11.00.ccf523d33b63"
+
     implementation(project(path = ":konfigurasjon"))
     implementation(project(path = ":openapi"))
+    implementation(project(path = ":tilgangsmaskin"))
 
     implementation(libs.bundles.jackson)
     implementation("tools.jackson.module:jackson-module-blackbird:${libs.versions.jackson.get()}")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.3")
+
+    implementation("no.nav.dagpenger:oauth2-klient:$dpBibliotekerVersion")
 
     implementation(libs.konfig)
     implementation(libs.kotlin.logging)
@@ -33,10 +38,13 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-serialization-jackson3:${libs.versions.ktor.get()}")
 
+    implementation("no.nav.dagpenger:ktor-client-metrics:$dpBibliotekerVersion")
+
     testImplementation("io.kotest:kotest-assertions-core-jvm:${libs.versions.kotest.get()}")
     testImplementation("io.kotest:kotest-assertions-json:${libs.versions.kotest.get()}")
     testImplementation(libs.mockk)
     testImplementation(libs.mock.oauth2.server)
+    testImplementation(libs.ktor.client.mock)
     testImplementation("io.ktor:ktor-server-test-host-jvm:${libs.versions.ktor.get()}")
     testImplementation("io.ktor:ktor-client-content-negotiation:${libs.versions.ktor.get()}")
     testImplementation("com.approvaltests:approvaltests:22.3.3")

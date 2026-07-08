@@ -1,7 +1,6 @@
-package no.nav.dagpenger.migrering.api
+package no.nav.dagpenger.api
 
 import io.ktor.http.HttpStatusCode
-import no.nav.dagpenger.api.BehandlingException
 import java.net.URI
 
 class UnprocessableContentException(

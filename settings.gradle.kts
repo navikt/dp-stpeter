@@ -17,3 +17,5 @@ rootProject.name = "dp-stpeter"
 include("mediator")
 include("konfigurasjon")
 include("openapi")
+
+include("tilgangsmaskin")
