@@ -6,9 +6,9 @@ info:
   contact:
     name: "#team-dagpenger"
 servers:
-  - url: https://dp-st-peter.intern.dev.nav.no
+  - url: https://dp-stpeter.intern.dev.nav.no
     description: dev
-#  - url: https://dp-st-peter.intern.nav.no
+#  - url: https://dp-stpeter.intern.nav.no
 #    description: prod
 paths:
   /api/v1/person:
