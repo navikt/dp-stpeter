@@ -11,7 +11,7 @@ servers:
 #  - url: https://dp-st-peter.intern.nav.no
 #    description: prod
 paths:
-  /api/person:
+  /api/v1/person:
     post:
       summary: Sjekk saksbehandlers tilgang til bruker
       requestBody:
@@ -95,4 +95,4 @@ components:
         Token må ha `audience` satt til `[cluster].teamdagpenger.dp-stpeter`.
         
         For å teste APIet kan du lage et gyldig OBO-token ved å bruke wonderwalled:
-        - [dev-fss](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.teamdagpenger.dp-stpeter)
+        - [dev-gcp](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.teamdagpenger.dp-stpeter)
