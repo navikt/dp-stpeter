@@ -13,6 +13,7 @@ dependencies {
 //
 //    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.3")
     implementation(libs.kotlin.logging)
+    implementation("io.ktor:ktor-http-jvm:${libs.versions.ktor.get()}")
 
 //    implementation(libs.konfig)
 //    implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.1.0")

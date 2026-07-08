@@ -45,7 +45,9 @@ class TilgangsmaskinClient(
                             val oboToken = tokenProvider.invoke(token)
                             header(HttpHeaders.Authorization, "Bearer $oboToken")
                             header(HttpHeaders.ContentType, ContentType.Application.Json)
+                            accept(ContentType.Application.ProblemJson)
                             accept(ContentType.Application.Json)
+                            accept(ContentType.Text.Plain)
                             setBody(ident)
                         }
                 sikkerlogg.info { "Tilgangsmaskin returnerte ${post.status}" }

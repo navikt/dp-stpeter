@@ -3,8 +3,7 @@ package no.nav.dagpenger.api
 import io.ktor.http.HttpStatusCode
 import java.net.URI
 
-// TODO: Har vi riktig navn på denne? Sannsynligvis ikke!
-open class BehandlingException(
+sealed class BehandlingException(
     val httpStatus: HttpStatusCode,
     val type: URI,
     val title: String,

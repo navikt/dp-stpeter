@@ -14,6 +14,8 @@ import io.ktor.server.request.uri
 import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import no.nav.dagpenger.api.models.HttpProblem
+import no.nav.dagpenger.tilgangsmaskin.NavIdentIkkeFunnetException
+import no.nav.dagpenger.tilgangsmaskin.TilgangAvvistException
 import java.net.URI
 
 fun StatusPagesConfig.statusPagesConfig() {
@@ -36,6 +38,45 @@ fun StatusPagesConfig.statusPagesConfig() {
             ),
         )
     }
+    exception<NavIdentIkkeFunnetException> { call, cause ->
+        call.application.log.info("tilgangsfeil: ${cause.message}. svarer med ${cause.status} og HttpProblem", cause)
+        call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
+        call.respond(
+            cause.status,
+            HttpProblem(
+                type = URI("urn:error:not_found"),
+                title = cause.title,
+                status = cause.status.value,
+                detail = cause.message,
+                instance = URI(call.request.uri),
+                properties =
+                    mutableMapOf(
+                        "navident" to cause.navident,
+                    ),
+            ),
+        )
+    }
+
+    exception<TilgangAvvistException> { call, cause ->
+        call.application.log.info("tilgangsfeil: ${cause.message}. svarer med ${cause.status} og HttpProblem", cause)
+
+        call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
+        call.respond(
+            cause.status,
+            HttpProblem(
+                title = cause.title,
+                status = cause.status.value,
+                type = cause.type,
+                detail = cause.message,
+                instance = URI(call.request.uri),
+                properties =
+                    mutableMapOf(
+                        "traceId" to cause.traceId,
+                    ),
+            ),
+        )
+    }
+
     exception<BadRequestException> { call, cause ->
         call.application.log.warn(
             "bad request: ${cause.message}. svarer med BadRequest og en feilmelding i JSON",

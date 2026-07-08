@@ -30,6 +30,7 @@ class StPeterSystem(
             ScenarioOptions(
                 content = "",
                 status = HttpStatusCode.NoContent,
+                contentType = ContentType.Text.Plain,
             )
 
         fun avvisScenario() =
@@ -74,7 +75,7 @@ class StPeterSystem(
             respond(
                 content = oppsett.content,
                 status = oppsett.status,
-                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                headers = headersOf(HttpHeaders.ContentType, oppsett.contentType.toString()),
             )
         }
 
@@ -82,6 +83,7 @@ class StPeterSystem(
         HttpClient(mockEngine) {
             install(ContentNegotiation) {
                 register(ContentType.Application.Json, JacksonConverter(objectMapper))
+                register(ContentType.Application.ProblemJson, JacksonConverter(objectMapper))
             }
         }
 
@@ -112,6 +114,7 @@ class StPeterSystem(
     class ScenarioOptions(
         var content: String = "",
         var status: HttpStatusCode = HttpStatusCode.NoContent,
+        var contentType: ContentType = ContentType.Application.ProblemJson,
     ) {
         inline fun test(crossinline block: StPeterSystem.() -> Unit) {
             val test = StPeterSystem(this@ScenarioOptions)

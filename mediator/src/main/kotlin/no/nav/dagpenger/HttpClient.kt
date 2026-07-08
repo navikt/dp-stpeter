@@ -24,6 +24,7 @@ fun createHttpClient(
     }
     install(ContentNegotiation) {
         register(ContentType.Application.Json, JacksonConverter(objectMapper))
+        register(ContentType.Application.ProblemJson, JacksonConverter(objectMapper))
     }
     configure()
 }

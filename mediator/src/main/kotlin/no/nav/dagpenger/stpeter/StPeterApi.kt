@@ -5,7 +5,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.request.receive
-import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
@@ -41,19 +40,16 @@ internal fun Application.stpeterApi(
                     val identForespørsel = call.receive<IdentForesporsel>()
                     val ident = identForespørsel.ident.tilPersonIdentfikator()
 
-                    val tilgangTilPersonKomplett =
+                    val harTilgang =
                         tilgangsmaskinResponseService.evaluerTilgangTilPersonKomplett(
                             ident = ident.identifikator(),
                             token = call.token(),
                         )
 
-                    val status = HttpStatusCode.fromValue(tilgangTilPersonKomplett.status)
-                    val problem = tilgangTilPersonKomplett.reason
-                    if (problem == null) {
-                        call.respond(status)
+                    if (harTilgang) {
+                        call.respond(HttpStatusCode.NoContent)
                     } else {
-                        call.response.header("Content-Type", "application/problem+json")
-                        call.respond(status = status, message = problem)
+                        throw UnknownError("En ukjent feil oppstod ved evaluering av tilgang")
                     }
                 }
             }
