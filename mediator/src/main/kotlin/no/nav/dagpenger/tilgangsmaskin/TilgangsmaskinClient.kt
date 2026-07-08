@@ -52,7 +52,7 @@ class TilgangsmaskinClient(
                         }
                 sikkerlogg.info { "Tilgangsmaskin returnerte ${post.status}" }
                 when (post.status) {
-                    HttpStatusCode.Unauthorized -> {
+                    HttpStatusCode.Forbidden -> {
                         val body = post.body<TilgangsmaskinResponse.TilgangAvvist>()
                         sikkerlogg.info { "\nBegrunnelse ${body.title}" }
                         body

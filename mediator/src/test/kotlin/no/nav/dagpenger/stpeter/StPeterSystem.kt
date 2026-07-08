@@ -50,7 +50,7 @@ class StPeterSystem(
                       "kanOverstyres": false
                     }
                     """.trimIndent(),
-                status = HttpStatusCode.Unauthorized,
+                status = HttpStatusCode.Forbidden,
             )
 
         fun navIdentIkkeFunnetScenario() =
