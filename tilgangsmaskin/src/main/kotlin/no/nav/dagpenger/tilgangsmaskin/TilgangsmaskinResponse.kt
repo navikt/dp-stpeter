@@ -4,7 +4,7 @@ import java.net.URI
 
 sealed interface TilgangsmaskinResponse {
     data class TilgangGodkjent(
-        val harTilgang: Boolean,
+        val harTilgang: Boolean = true,
     ) : TilgangsmaskinResponse
 
     data class TilgangAvvist(

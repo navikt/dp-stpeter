@@ -12,10 +12,13 @@ dependencies {
     implementation(project(path = ":konfigurasjon"))
     implementation(project(path = ":openapi"))
     implementation(project(path = ":tilgangsmaskin"))
+    implementation(project(path = ":oidc"))
 
     implementation(libs.bundles.jackson)
-    implementation("tools.jackson.module:jackson-module-blackbird:${libs.versions.jackson.get()}")
 
+    implementation("tools.jackson.module:jackson-module-blackbird:${libs.versions.jackson.get()}")
+    // implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.1")
+    // implementation("com.fasterxml.jackson.core:jackson-annotations:2.22")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.3")
 
     implementation("no.nav.dagpenger:oauth2-klient:$dpBibliotekerVersion")
@@ -30,6 +33,8 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:1.5.6")
 
+    implementation("io.lettuce:lettuce-core:7.6.0.RELEASE")
+
     implementation(libs.bundles.ktor.client)
     implementation(libs.bundles.ktor.server)
     implementation("io.ktor:ktor-server-core-jvm:${libs.versions.ktor.get()}")
@@ -39,6 +44,7 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-server-metrics-micrometer:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-serialization-jackson3:${libs.versions.ktor.get()}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.11.0")
 
     implementation("no.nav.dagpenger:ktor-client-metrics:$dpBibliotekerVersion")
 
@@ -52,6 +58,8 @@ dependencies {
     testImplementation("com.approvaltests:approvaltests:22.3.3")
     testImplementation("com.tngtech.archunit:archunit-junit5:1.4.0")
     testImplementation("io.kotest:kotest-runner-junit5:${libs.versions.kotest.get()}")
+    testImplementation("com.redis:testcontainers-redis:2.2.4")
+    testImplementation("org.testcontainers:testcontainers:2.0.2")
 }
 
 application {

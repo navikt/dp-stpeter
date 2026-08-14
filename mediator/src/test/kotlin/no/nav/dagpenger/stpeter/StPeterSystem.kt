@@ -11,6 +11,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.jackson3.JacksonConverter
 import io.ktor.server.application.Application
+import no.nav.dagpenger.RedisTestServer
 import no.nav.dagpenger.TestApplication.AZURE_AD_ISSUER_ID
 import no.nav.dagpenger.TestApplication.CLIENT_ID
 import no.nav.dagpenger.TestApplication.SAKSBEHANDLER_GRUPPE
@@ -20,10 +21,12 @@ import no.nav.dagpenger.api.auth.AuthFactory
 import no.nav.dagpenger.api.auth.AuthFactory.azure_app
 import no.nav.dagpenger.konfigurasjon.Configuration
 import no.nav.dagpenger.objectMapper
+import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinCache
 import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinClient
 
 class StPeterSystem(
     val oppsett: ScenarioOptions,
+    redis: RedisTestServer,
 ) {
     companion object {
         fun godkjentScenario() =
@@ -102,11 +105,12 @@ class StPeterSystem(
             ),
         )
 
-    private val tilgangsmaskinClient =
+    val tilgangsmaskinClient =
         TilgangsmaskinClient(
             tilgangsMaskinApiUrl = "http://localhost",
             tokenProvider = tokenProvider.oboExchanger,
             httpClient = httpClient,
+            cache = TilgangsmaskinCache(redis.server),
         )
 
     val api: Application.() -> Unit = { stpeterApi(authFactory, tilgangsmaskinClient) }
@@ -116,8 +120,11 @@ class StPeterSystem(
         var status: HttpStatusCode = HttpStatusCode.NoContent,
         var contentType: ContentType = ContentType.Application.ProblemJson,
     ) {
-        inline fun test(crossinline block: StPeterSystem.() -> Unit) {
-            val test = StPeterSystem(this@ScenarioOptions)
+        inline fun test(
+            redis: RedisTestServer,
+            block: StPeterSystem.() -> Unit,
+        ) {
+            val test = StPeterSystem(this@ScenarioOptions, redis)
             test.block()
         }
     }

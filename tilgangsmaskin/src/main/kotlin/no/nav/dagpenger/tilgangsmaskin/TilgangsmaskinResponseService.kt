@@ -1,13 +1,14 @@
 package no.nav.dagpenger.tilgangsmaskin
 
 import io.ktor.http.HttpStatusCode
+import no.nav.dagpenger.oidc.OidcToken
 
 class TilgangsmaskinResponseService(
     val tilgangsmaskinClient: TilgangsmaskinClientInterface,
 ) {
     fun evaluerTilgangTilPersonKomplett(
         ident: String,
-        token: String,
+        token: OidcToken,
     ): Boolean {
         val response =
             tilgangsmaskinClient.harTilgangTilPersonKomplett(

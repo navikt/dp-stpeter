@@ -2,9 +2,10 @@ package no.nav.dagpenger.api
 
 import io.ktor.http.HttpHeaders
 import io.ktor.server.application.ApplicationCall
+import no.nav.dagpenger.oidc.OidcToken
 
-fun ApplicationCall.token(): String {
+fun ApplicationCall.token(): OidcToken {
     val token: String = requireNotNull(this.request.headers[HttpHeaders.Authorization]).split(" ")[1]
 
-    return token
+    return OidcToken(token)
 }

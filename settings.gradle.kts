@@ -19,3 +19,4 @@ include("konfigurasjon")
 include("openapi")
 
 include("tilgangsmaskin")
+include("oidc")

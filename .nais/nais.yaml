@@ -48,6 +48,9 @@ spec:
       value: http://populasjonstilgangskontroll.tilgangsmaskin
     - name: TILGANGSMASKIN_API_SCOPE
       value: "{{tilgangsmaksinApiScope}}"
+  valkey:
+    - instance: stpeter
+      access: readwrite
   {{#if ingresses}}
   ingresses:
     {{#each ingresses as |url|}}
