@@ -21,12 +21,6 @@ object Configuration {
         val saksbehandler by stringType
     }
 
-    object Redis : PropertyGroup() {
-        val uriStpeter by stringType
-        val usernameStpeter by stringType
-        val passwordStpeter by stringType
-    }
-
     val tilgangsMaskinApiUrl by lazy { properties[Key("TILGANGSMASKIN_API_URL", stringType)] }
 
     val properties =
