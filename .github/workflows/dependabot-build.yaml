@@ -5,6 +5,7 @@ on:
     branches:
       - 'dependabot/**'
       - 'update-digests'
+      - 'renovate/**'
 
 jobs:
   test:
