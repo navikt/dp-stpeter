@@ -19,7 +19,7 @@ dependencies {
     implementation("tools.jackson.module:jackson-module-blackbird:${libs.versions.jackson.get()}")
     // implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.1")
     // implementation("com.fasterxml.jackson.core:jackson-annotations:2.22")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.11.0")
 
     implementation("no.nav.dagpenger:oauth2-klient:$dpBibliotekerVersion")
 
