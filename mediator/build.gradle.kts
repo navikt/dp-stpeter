@@ -26,14 +26,14 @@ dependencies {
     implementation(libs.konfig)
     implementation(libs.kotlin.logging)
     implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.1.0")
-    implementation("io.opentelemetry:opentelemetry-api:1.62.0")
+    implementation("io.opentelemetry:opentelemetry-api:1.65.0")
     implementation("io.prometheus:prometheus-metrics-core:1.3.1")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.16.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.17.1")
     implementation("org.slf4j:slf4j-api:2.0.18")
 
-    implementation("ch.qos.logback:logback-classic:1.5.6")
+    implementation("ch.qos.logback:logback-classic:1.6.3")
 
-    implementation("io.lettuce:lettuce-core:7.6.0.RELEASE")
+    implementation("io.lettuce:lettuce-core:7.7.0.RELEASE")
 
     implementation(libs.bundles.ktor.client)
     implementation(libs.bundles.ktor.server)
@@ -55,11 +55,11 @@ dependencies {
     testImplementation(libs.ktor.client.mock)
     testImplementation("io.ktor:ktor-server-test-host-jvm:${libs.versions.ktor.get()}")
     testImplementation("io.ktor:ktor-client-content-negotiation:${libs.versions.ktor.get()}")
-    testImplementation("com.approvaltests:approvaltests:22.3.3")
-    testImplementation("com.tngtech.archunit:archunit-junit5:1.4.0")
+    testImplementation("com.approvaltests:approvaltests:22.4.0")
+    testImplementation("com.tngtech.archunit:archunit-junit5:1.5.0")
     testImplementation("io.kotest:kotest-runner-junit5:${libs.versions.kotest.get()}")
     testImplementation("com.redis:testcontainers-redis:2.2.4")
-    testImplementation("org.testcontainers:testcontainers:2.0.2")
+    testImplementation("org.testcontainers:testcontainers:2.0.5")
 }
 
 application {
