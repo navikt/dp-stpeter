@@ -59,7 +59,7 @@ dependencies {
     testImplementation("com.tngtech.archunit:archunit-junit5:1.4.0")
     testImplementation("io.kotest:kotest-runner-junit5:${libs.versions.kotest.get()}")
     testImplementation("com.redis:testcontainers-redis:2.2.4")
-    testImplementation("org.testcontainers:testcontainers:2.0.2")
+    testImplementation("org.testcontainers:testcontainers:2.0.5")
 }
 
 application {
