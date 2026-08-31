@@ -33,7 +33,7 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:1.5.6")
 
-    implementation("io.lettuce:lettuce-core:7.6.0.RELEASE")
+    implementation("io.lettuce:lettuce-core:7.7.0.RELEASE")
 
     implementation(libs.bundles.ktor.client)
     implementation(libs.bundles.ktor.server)
