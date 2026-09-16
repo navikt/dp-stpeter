@@ -26,16 +26,18 @@ class TilgangsmaskinCache(
     suspend fun set(
         token: OidcToken,
         ident: String,
+        endpoint: String,
         value: TilgangsmaskinResponse,
     ) {
-        redis.set(key(token, ident), objectMapper.writeValueAsBytes(value.toCached()))
+        redis.set(key(token, ident, endpoint), objectMapper.writeValueAsBytes(value.toCached()))
     }
 
     suspend fun get(
         token: OidcToken,
         ident: String,
+        endpoint: String,
     ): TilgangsmaskinResponse? =
-        redis[key(token, ident)]?.let {
+        redis[key(token, ident, endpoint)]?.let {
             cacheHit()
             objectMapper.readValue<CachedTilgangsmaskinResponse>(it).toDomain()
         } ?: run {
@@ -46,7 +48,8 @@ class TilgangsmaskinCache(
     private fun key(
         token: OidcToken,
         ident: String,
-    ): Key = Key(prefix = KEY_PREFIX, value = "${token.navIdent()}_$ident")
+        endpoint: String,
+    ): Key = Key(prefix = KEY_PREFIX, value = "${token.navIdent()}_${endpoint}_$ident")
 
     fun cacheHitCount(): Double = prometheus.counter("cache_hit", listOf(Tag.of("service", KEY_PREFIX))).count()
 

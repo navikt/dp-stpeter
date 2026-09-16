@@ -26,12 +26,6 @@ class StPeterWithOAuthMock {
         stPeterMockServer.start()
         mockOAuth2Server.start()
 
-//        System.setProperty("STPETER_URL", stPeterMockServer.url())
-//        System.setProperty("STPETER_SCOPE", stPeterMockServer.scope)
-//        System.setProperty("AZURE_APP_WELL_KNOWN_URL", mockOAuth2Server.wellKnownUrl("azureAd").toString())
-//        System.setProperty("AZURE_APP_CLIENT_ID", "test-client-id")
-//        System.setProperty("AZURE_APP_CLIENT_SECRET", "test-secret")
-
         config.clear()
         config.putAll(
             mapOf(

@@ -48,6 +48,7 @@ class TilgangsmaskinClient(
                     .get(
                         token = token,
                         ident = ident.identifikator(),
+                        endpoint = endpoint,
                     )?.let {
                         return@runBlocking it
                     }
@@ -57,6 +58,7 @@ class TilgangsmaskinClient(
                 cache.set(
                     token = token,
                     ident = ident.identifikator(),
+                    endpoint = endpoint,
                     value = response,
                 )
 
