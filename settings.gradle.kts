@@ -20,3 +20,7 @@ include("openapi")
 
 include("tilgangsmaskin")
 include("oidc")
+
+include("stpeter-plugin")
+
+include("stpeter-plugin-test")

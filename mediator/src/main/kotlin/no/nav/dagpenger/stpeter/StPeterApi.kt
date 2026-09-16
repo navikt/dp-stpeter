@@ -15,8 +15,10 @@ import no.nav.dagpenger.api.auth.AuthFactory
 import no.nav.dagpenger.api.authenticationConfig
 import no.nav.dagpenger.api.models.IdentForesporsel
 import no.nav.dagpenger.api.token
+import no.nav.dagpenger.tilgangsmaskin.TilgangAvvistException
 import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinClient
 import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinResponseService
+import java.net.URI
 
 internal fun Application.stpeterApi(
     authFactory: AuthFactory,
@@ -49,7 +51,11 @@ internal fun Application.stpeterApi(
                     if (harTilgang) {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
-                        throw UnknownError("En ukjent feil oppstod ved evaluering av tilgang")
+                        throw TilgangAvvistException(
+                            type = URI.create("urn:error:forbidden"),
+                            status = HttpStatusCode.Forbidden,
+                            title = "En ukjent feil oppstod ved evaluering av tilgang",
+                        )
                     }
                 }
             }

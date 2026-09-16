@@ -61,6 +61,13 @@ fun StatusPagesConfig.statusPagesConfig() {
         call.application.log.info("tilgangsfeil: ${cause.message}. svarer med ${cause.status} og HttpProblem", cause)
 
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
+
+        val extensions =
+            mutableMapOf<String, Any?>(
+                "navIdent" to cause.navIdent,
+                "kanOverstyres" to cause.kanOverstyres,
+                "traceId" to cause.traceId,
+            )
         call.respond(
             cause.status,
             HttpProblem(
@@ -69,10 +76,7 @@ fun StatusPagesConfig.statusPagesConfig() {
                 type = cause.type,
                 detail = cause.message,
                 instance = URI(call.request.uri),
-                properties =
-                    mutableMapOf(
-                        "traceId" to cause.traceId,
-                    ),
+                properties = extensions.filterValues { it != null }.mapValues { it.value!! }.toMutableMap(),
             ),
         )
     }
