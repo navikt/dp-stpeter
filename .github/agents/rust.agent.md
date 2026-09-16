@@ -6,13 +6,13 @@ tools:
   - execute
   - read
   - edit
-  - search
-  - web
+  - grep
+  - glob
+  - web_fetch
   - todo
-  - ms-vscode.vscode-websearchforcopilot/websearch
-  - io.github.navikt/github-mcp/get_file_contents
-  - io.github.navikt/github-mcp/search_code
-  - io.github.navikt/github-mcp/search_repositories
+  - github/get_file_contents
+  - github/search_code
+  - github/search_repositories
 ---
 
 # Rust Agent
