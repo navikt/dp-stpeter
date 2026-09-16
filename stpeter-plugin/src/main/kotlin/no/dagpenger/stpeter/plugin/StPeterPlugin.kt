@@ -33,7 +33,7 @@ class StPeterPlugin(
                 .header("Authorization", "Bearer $oboToken")
                 .header("Accept", "application/problem+json")
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("""{"ident":"$ident"}"""))
+                .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(mapOf("ident" to ident))))
                 .build()
 
         val response =
@@ -55,7 +55,13 @@ class StPeterPlugin(
             }
 
             else -> {
-                throw RuntimeException("💣")
+                throw TilgangAvvistException(
+                    status = HttpStatusCode.Forbidden,
+                    type = URI("urn:error:forbidden"),
+                    detail = "Uventet svar fra stpeter: status=${response.statusCode()}, body=${response.body()}",
+                    instance = URI("$url/api/v1/person"),
+                    title = "En ukjent feil oppstod ved evaluering av tilgang",
+                )
             }
         }
     }

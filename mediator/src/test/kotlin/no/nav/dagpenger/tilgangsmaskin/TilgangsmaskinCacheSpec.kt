@@ -26,7 +26,7 @@ class TilgangsmaskinCacheSpec :
         "skal kunne sette og hente alle tilgangsmaskin responser fra cache" {
             val token = OidcToken(createTestOAuthToken())
             val responses =
-                listOf<TilgangsmaskinResponse>(
+                listOf(
                     TilgangsmaskinResponse.TilgangGodkjent(
                         harTilgang = true,
                     ),
@@ -50,14 +50,26 @@ class TilgangsmaskinCacheSpec :
 
             responses.forEachIndexed { index, expected ->
                 val ident = "123$index"
-                cache.set(token, ident, expected)
+                cache.set(token, ident, "komplett", expected)
 
-                val response = cache.get(token, ident)
+                val response = cache.get(token, ident, "komplett")
 
                 response shouldBe expected
             }
 
             cache.cacheHitCount() shouldBe responses.size.toDouble()
+        }
+
+        "skal ikke returnere cachet svar for 'kjerne' når det kun er cachet for 'komplett'" {
+            val token = OidcToken(createTestOAuthToken())
+            val ident = "99999999999"
+            val komplettSvar = TilgangsmaskinResponse.TilgangGodkjent(harTilgang = true)
+
+            cache.set(token, ident, "komplett", komplettSvar)
+
+            val kjerneSvar = cache.get(token, ident, "kjerne")
+
+            kjerneSvar shouldBe null
         }
     })
 
