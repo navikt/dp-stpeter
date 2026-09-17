@@ -9,7 +9,8 @@ import okhttp3.mockwebserver.RecordedRequest
 import java.net.InetAddress
 
 class StPeterMockServer {
-    private var stPeterResponseStatus: HttpStatusCode = HttpStatusCode.NoContent
+    private val defaultHttpStatusCode: HttpStatusCode = HttpStatusCode(418, "I'm a teapot")
+    private var responseStatus: HttpStatusCode = defaultHttpStatusCode
 
     val scope = "test.teamdagpenger.dp-stpeter"
     private val mockStPeterServer: MockWebServer by lazy {
@@ -26,7 +27,7 @@ class StPeterMockServer {
                             token.audience?.firstOrNull { it == scope }
                                 ?: return MockResponse().setResponseCode(HttpStatusCode.Unauthorized.value)
                         } ?: return MockResponse().setResponseCode(HttpStatusCode.Unauthorized.value)
-                        return when (stPeterResponseStatus) {
+                        return when (responseStatus) {
                             HttpStatusCode.NoContent -> {
                                 MockResponse().setResponseCode(HttpStatusCode.NoContent.value)
                             }
@@ -36,7 +37,7 @@ class StPeterMockServer {
                                     .setResponseCode(HttpStatusCode.Forbidden.value)
                                     .setHeader("Content-Type", "application/problem+json")
                                     .setBody(
-                                        tilgangResponse(stPeterResponseStatus),
+                                        tilgangResponse(responseStatus),
                                     )
                             }
 
@@ -45,12 +46,15 @@ class StPeterMockServer {
                                     .setResponseCode(HttpStatusCode.NotFound.value)
                                     .setHeader("Content-Type", "application/problem+json")
                                     .setBody(
-                                        tilgangResponse(stPeterResponseStatus),
+                                        tilgangResponse(responseStatus),
                                     )
                             }
 
                             else -> {
-                                MockResponse().setResponseCode(HttpStatusCode.InternalServerError.value)
+                                MockResponse()
+                                    .setResponseCode(responseStatus.value)
+                                    .setHeader("Content-Type", "application/problem+json")
+                                    .setBody(tilgangResponse(defaultHttpStatusCode))
                             }
                         }
                     }
@@ -72,32 +76,75 @@ class StPeterMockServer {
     }
 
     suspend fun withStPeterAllowAccessToPerson(block: suspend () -> Unit) {
-        setStPeterResponse(status = HttpStatusCode.NoContent)
+        responseStatus = HttpStatusCode.NoContent
         block()
+        resetResponse()
     }
 
     suspend fun withStPeterDenyAccessToPerson(block: suspend () -> Unit) {
-        setStPeterResponse(status = HttpStatusCode.Forbidden)
+        responseStatus = HttpStatusCode.Forbidden
         block()
+        resetResponse()
     }
 
     suspend fun withStPeterSaksbehandlerNotFound(block: suspend () -> Unit) {
-        setStPeterResponse(status = HttpStatusCode.NotFound)
+        responseStatus = HttpStatusCode.NotFound
         block()
+        resetResponse()
     }
 
-    fun setStPeterResponse(status: HttpStatusCode = HttpStatusCode.NoContent) {
-        stPeterResponseStatus = status
+    suspend fun withStPeterResponse(
+        status: HttpStatusCode,
+        block: suspend () -> Unit,
+    ) {
+        responseStatus = status
+        block()
+        resetResponse()
+    }
+
+    private fun resetResponse() {
+        responseStatus = defaultHttpStatusCode
     }
 
     private fun tilgangResponse(status: HttpStatusCode): String =
         when (status) {
             HttpStatusCode.Forbidden -> {
-                """{"title":"Ingen tilgang","status":403,"type":"urn:error:forbidden","detail":"Du har ikke tilgang til personen.","instance":"http://localhost"}"""
+                // language=json
+                """
+                {
+                  "title": "Ingen tilgang",
+                  "status": 403,
+                  "type": "urn:error:forbidden",
+                  "detail": "Du har ikke tilgang til personen.",
+                  "instance": "http://localhost"
+                }
+                """.trimIndent()
             }
 
             HttpStatusCode.NotFound -> {
-                """{"title":"Person ikke funnet","status":404,"type":"urn:error:not_found","detail":"Personen ble ikke funnet.","instance":"http://localhost"}"""
+                // language=json
+                """
+                {
+                  "title": "Person ikke funnet",
+                  "status": 404,
+                  "type": "urn:error:not_found",
+                  "detail": "Personen ble ikke funnet.",
+                  "instance": "http://localhost"
+                }
+                """.trimIndent()
+            }
+
+            defaultHttpStatusCode -> {
+                // language=json
+                """
+                {
+                  "title": "I'm a teapot",
+                  "status": 418,
+                  "type": "urn:error:im_a_teapot",
+                  "detail": "Bob's not your uncle.",
+                  "instance": "http://localhost"
+                }
+                """.trimIndent()
             }
 
             else -> {

@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.ktor.http.HttpStatusCode
 import no.dagpenger.stpeter.plugin.test.StPeterWithOAuthMock
 
@@ -18,7 +19,6 @@ class StPeterPluginSpec :
             stPeter =
                 StPeterPlugin(
                     config = StPeterConfig(config = stPeterMock.config()),
-                    oboExchanger = stPeterMock.oboExchanger,
                 )
         }
         afterSpec {
@@ -94,5 +94,29 @@ class StPeterPluginSpec :
                     }
                 }
             exception.status shouldBe HttpStatusCode.NotFound
+        }
+
+        "skal kaste exception når stpeter returnerer uventet statuskode" {
+            val exception =
+                shouldThrow<TilgangAvvistException> {
+                    stPeterMock.withStPeterResponse(HttpStatusCode.InternalServerError) {
+                        stPeter.vedTilgangTilPerson(
+                            ident = "12345678901",
+                            token =
+                                stPeterMock
+                                    .issueToken(
+                                        issuerId = "azureAd",
+                                        audience = "dp-arena-innsyn",
+                                        claims =
+                                            mapOf(
+                                                "idtyp" to "app",
+                                                "azp_name" to "dp-arena-innsyn",
+                                            ),
+                                    ),
+                        ) {
+                        }
+                    }
+                }
+            exception.message shouldContain "status=500"
         }
     })
