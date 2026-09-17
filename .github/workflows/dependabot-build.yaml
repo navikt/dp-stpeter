@@ -6,6 +6,7 @@ on:
       - 'dependabot/**'
       - 'update-digests'
       - 'renovate/**'
+      - 'feat/**'
 
 jobs:
   test:
