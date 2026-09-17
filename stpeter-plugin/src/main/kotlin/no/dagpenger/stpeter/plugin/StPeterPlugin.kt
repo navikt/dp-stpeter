@@ -3,13 +3,14 @@ package no.dagpenger.stpeter.plugin
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.dagpenger.oauth2.CachedOauth2Client
+import no.nav.dagpenger.oauth2.OAuth2Config
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 class StPeterPlugin(
-    private val oboExchanger: (String) -> String,
     private val config: StPeterConfig = StPeterConfig(),
 ) {
     private val client: HttpClient =
@@ -17,6 +18,25 @@ class StPeterPlugin(
             .newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
             .build()
+
+    private val azureAdClient: CachedOauth2Client by lazy {
+        val azureAdConfig = OAuth2Config.AzureAd(config.toMap())
+        CachedOauth2Client(
+            tokenEndpointUrl = azureAdConfig.tokenEndpointUrl,
+            authType = azureAdConfig.clientSecret(),
+        )
+    }
+
+    val oboExchanger: (String) -> String by lazy {
+        { token: String ->
+            val accessToken =
+                azureAdClient
+                    .onBehalfOf(token, config.scope)
+                    .access_token
+            requireNotNull(accessToken) { "Failed to get access token" }
+            accessToken
+        }
+    }
 
     private val url by lazy { config.url }
 

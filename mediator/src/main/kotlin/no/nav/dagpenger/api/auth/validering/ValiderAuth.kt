@@ -1,4 +1,4 @@
-package no.nav.dagpenger.mediator.api.auth.validering
+package no.nav.dagpenger.api.auth.validering
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.server.auth.jwt.JWTAuthenticationProvider

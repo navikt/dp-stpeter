@@ -1,6 +1,7 @@
 plugins {
     id("common")
     `java-library`
+    id("publish-lib")
 }
 dependencies {
 

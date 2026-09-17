@@ -1,9 +1,7 @@
 package no.dagpenger.stpeter.plugin.test
 
-import no.nav.dagpenger.oauth2.CachedOauth2Client
-import no.nav.dagpenger.oauth2.OAuth2Config
+import io.ktor.http.HttpStatusCode
 import no.nav.security.mock.oauth2.MockOAuth2Server
-import kotlin.getValue
 
 class StPeterWithOAuthMock {
     internal val stPeterMockServer: StPeterMockServer by lazy {
@@ -34,6 +32,8 @@ class StPeterWithOAuthMock {
                 "AZURE_APP_WELL_KNOWN_URL" to mockOAuth2Server.wellKnownUrl("azureAd").toString(),
                 "AZURE_APP_CLIENT_ID" to "test-client-id",
                 "AZURE_APP_CLIENT_SECRET" to "test-secret",
+                "AZURE_APP_JWK" to mockOAuth2Server.jwksUrl("azureAd").toString(),
+                "AZURE_OPENID_CONFIG_TOKEN_ENDPOINT" to mockOAuth2Server.tokenEndpointUrl("azureAd").toString(),
             ),
         )
     }
@@ -46,7 +46,7 @@ class StPeterWithOAuthMock {
     fun issueToken(
         issuerId: String = "azureAd",
         audience: String = "dp-arena-innsyn",
-        claims: Map<String, String> = emptyMap(),
+        claims: Map<String, Any> = emptyMap(),
     ): String =
         mockOAuth2Server
             .issueToken(
@@ -73,32 +73,12 @@ class StPeterWithOAuthMock {
         }
     }
 
-    val azureAdClient: CachedOauth2Client by lazy {
-        val azureAdConfig =
-            OAuth2Config.AzureAd(
-                mapOf(
-                    OAuth2Config.AzureAd.CLIENT_ID_KEY to "test-client-id",
-                    OAuth2Config.AzureAd.CLIENT_SECRET_KEY to "test-secret",
-                    OAuth2Config.AzureAd.WELLKNOWN_URL_KEY to
-                        mockOAuth2Server
-                            .wellKnownUrl("default")
-                            .toString(),
-                ),
-            )
-        CachedOauth2Client(
-            tokenEndpointUrl = azureAdConfig.tokenEndpointUrl,
-            authType = azureAdConfig.clientSecret(),
-        )
-    }
-
-    val oboExchanger: (String) -> String by lazy {
-        { token: String ->
-            val accessToken =
-                azureAdClient
-                    .onBehalfOf(token, stPeterMockServer.scope)
-                    .access_token
-            requireNotNull(accessToken) { "Failed to get access token" }
-            accessToken
+    suspend fun withStPeterResponse(
+        httpStatusCode: HttpStatusCode,
+        block: suspend () -> Unit,
+    ) {
+        stPeterMockServer.withStPeterResponse(httpStatusCode) {
+            block()
         }
     }
 }

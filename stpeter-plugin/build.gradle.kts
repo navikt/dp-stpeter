@@ -1,6 +1,7 @@
 plugins {
     id("common")
     `java-library`
+    id("publish-lib")
 }
 dependencies {
     val dpBibliotekerVersion = "2026.05.04-11.00.ccf523d33b63"
