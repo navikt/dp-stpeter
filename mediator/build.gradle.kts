@@ -27,7 +27,7 @@ dependencies {
     implementation("io.opentelemetry:opentelemetry-api:1.66.0")
     implementation("io.prometheus:prometheus-metrics-core:1.9.0")
     implementation("io.micrometer:micrometer-registry-prometheus:1.17.1")
-    implementation("org.slf4j:slf4j-api:2.0.17")
+    implementation("org.slf4j:slf4j-api:2.0.18")
 
     implementation("ch.qos.logback:logback-classic:1.6.3")
 
