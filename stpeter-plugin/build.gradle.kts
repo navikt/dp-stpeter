@@ -9,7 +9,7 @@ dependencies {
     implementation(libs.bundles.ktor.client)
     implementation("no.nav.dagpenger:ktor-client-metrics:$dpBibliotekerVersion")
     implementation("io.prometheus:prometheus-metrics-core:1.3.1")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.16.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.17.1")
     implementation("tools.jackson.module:jackson-module-blackbird:${libs.versions.jackson.get()}")
     implementation("no.nav.dagpenger:oauth2-klient:$dpBibliotekerVersion")
 
