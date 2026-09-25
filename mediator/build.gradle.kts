@@ -54,7 +54,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host-jvm:${libs.versions.ktor.get()}")
     testImplementation("io.ktor:ktor-client-content-negotiation:${libs.versions.ktor.get()}")
     testImplementation("com.approvaltests:approvaltests:31.0.0")
-    testImplementation("com.tngtech.archunit:archunit-junit5:1.5.0")
+    testImplementation("com.tngtech.archunit:archunit-junit5:1.5.1")
     testImplementation("io.kotest:kotest-runner-junit5:${libs.versions.kotest.get()}")
     testImplementation("com.redis:testcontainers-redis:2.2.4")
     testImplementation("org.testcontainers:testcontainers:2.0.5")
