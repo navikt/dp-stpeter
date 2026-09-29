@@ -81,6 +81,8 @@ spec:
           namespace: nais-system
         - application: populasjonstilgangskontroll
           namespace: tilgangsmaskin
+        - application: logging
+          namespace: nais-system
     inbound:
       rules:
         - application: dp-migrering
