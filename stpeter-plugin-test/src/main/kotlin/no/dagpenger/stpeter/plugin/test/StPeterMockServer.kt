@@ -54,7 +54,7 @@ class StPeterMockServer {
                                 MockResponse()
                                     .setResponseCode(responseStatus.value)
                                     .setHeader("Content-Type", "application/problem+json")
-                                    .setBody(tilgangResponse(defaultHttpStatusCode))
+                                    .setBody(tilgangResponse(responseStatus))
                             }
                         }
                     }
@@ -138,9 +138,9 @@ class StPeterMockServer {
                 // language=json
                 """
                 {
-                  "title": "I'm a teapot",
-                  "status": 418,
-                  "type": "urn:error:im_a_teapot",
+                  "title": "Oisann!",
+                  "status": "${status.value}",
+                  "type": "urn:error:${status.toString().lowercase()}",
                   "detail": "Bob's not your uncle.",
                   "instance": "http://localhost"
                 }

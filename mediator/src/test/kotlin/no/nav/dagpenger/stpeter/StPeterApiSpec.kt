@@ -53,6 +53,7 @@ class StPeterApiSpec :
                             bodyAsText.isEmpty() shouldBeEqual true
                             tilgangsmaskinClient.cache.cacheHitCount() shouldBe 0
                             tilgangsmaskinClient.cache.cacheMissCount() shouldBe 1
+                            tilgangsmaskinClient.utfallCount("success") shouldBe 1.0
                         }
 
                         sjekkTilgang(token, IDENT_MED_TILGANG).apply {
@@ -61,6 +62,7 @@ class StPeterApiSpec :
                             bodyAsText.isEmpty() shouldBeEqual true
                             tilgangsmaskinClient.cache.cacheHitCount() shouldBe 1
                             tilgangsmaskinClient.cache.cacheMissCount() shouldBe 1
+                            tilgangsmaskinClient.utfallCount("success") shouldBe 1.0
                         }
                     }
                 }
@@ -84,6 +86,7 @@ class StPeterApiSpec :
                             httpProblem.shouldBeInstanceOf<HttpProblem>()
                             tilgangsmaskinClient.cache.cacheHitCount() shouldBe 0
                             tilgangsmaskinClient.cache.cacheMissCount() shouldBe 1
+                            tilgangsmaskinClient.utfallCount("success") shouldBe 1.0
                         }
 
                         sjekkTilgang(token, IDENT_UTEN_TILGANG).apply {
@@ -94,6 +97,7 @@ class StPeterApiSpec :
                             httpProblem.shouldBeInstanceOf<HttpProblem>()
                             tilgangsmaskinClient.cache.cacheHitCount() shouldBe 1
                             tilgangsmaskinClient.cache.cacheMissCount() shouldBe 1
+                            tilgangsmaskinClient.utfallCount("success") shouldBe 1.0
                         }
                     }
                 }
@@ -115,6 +119,7 @@ class StPeterApiSpec :
                         httpProblem.shouldBeInstanceOf<HttpProblem>()
                         tilgangsmaskinClient.cache.cacheHitCount() shouldBe 0
                         tilgangsmaskinClient.cache.cacheMissCount() shouldBe 1
+                        tilgangsmaskinClient.utfallCount("success") shouldBe 1.0
                     }
 
                     sjekkTilgang(token, IDENT_UTEN_TILGANG).apply {
@@ -125,6 +130,7 @@ class StPeterApiSpec :
                         httpProblem.shouldBeInstanceOf<HttpProblem>()
                         tilgangsmaskinClient.cache.cacheHitCount() shouldBe 1
                         tilgangsmaskinClient.cache.cacheMissCount() shouldBe 1
+                        tilgangsmaskinClient.utfallCount("success") shouldBe 1.0
                     }
                 }
             }
@@ -179,6 +185,7 @@ class StPeterApiSpec :
                         body.shouldBeValidJson()
                         val httpProblem = objectMapper.readValue(body, HttpProblem::class.java)
                         httpProblem.shouldBeInstanceOf<HttpProblem>()
+                        tilgangsmaskinClient.utfallCount("client_error") shouldBe 0.0
                     }
                 }
             }
@@ -197,6 +204,67 @@ class StPeterApiSpec :
                         body.shouldBeValidJson()
                         val httpProblem = objectMapper.readValue(body, HttpProblem::class.java)
                         httpProblem.shouldBeInstanceOf<HttpProblem>()
+                        tilgangsmaskinClient.utfallCount("client_error") shouldBe 0.0
+                    }
+                }
+            }
+        }
+
+        "skal gi 500 ved feil fra tilgangsmaskin" {
+            StPeterSystem.tilgangsmaskinError().test(redis) {
+                withMockAuthServerAndTestApplication(this.api) {
+                    val token =
+                        testAzureAdToken(
+                            navIdent = "Z500500",
+                        )
+
+                    sjekkTilgang(token, IDENT_MED_TILGANG).apply {
+                        status.value shouldBe 500
+                        val body = bodyAsText()
+                        body.shouldBeValidJson()
+                        val httpProblem = objectMapper.readValue(body, HttpProblem::class.java)
+                        httpProblem.shouldBeInstanceOf<HttpProblem>()
+                        tilgangsmaskinClient.utfallCount("server_error") shouldBe 1.0
+                    }
+                }
+            }
+        }
+
+        "skal gi 500 ved IOException (f.eks. timeout) mot tilgangsmaskin" {
+            StPeterSystem.tilgangsmaskinIOException().test(redis) {
+                withMockAuthServerAndTestApplication(this.api) {
+                    val token =
+                        testAzureAdToken(
+                            navIdent = "Z600600",
+                        )
+
+                    sjekkTilgang(token, IDENT_MED_TILGANG).apply {
+                        status.value shouldBe 500
+                        val body = bodyAsText()
+                        body.shouldBeValidJson()
+                        val httpProblem = objectMapper.readValue(body, HttpProblem::class.java)
+                        httpProblem.shouldBeInstanceOf<HttpProblem>()
+                        tilgangsmaskinClient.utfallCount("io_error") shouldBe 1.0
+                    }
+                }
+            }
+        }
+
+        "skal gi 500 ved uventet statuskode mot tilgangsmaskin" {
+            StPeterSystem.tilgangsmaskinUventetStatusKode().test(redis) {
+                withMockAuthServerAndTestApplication(this.api) {
+                    val token =
+                        testAzureAdToken(
+                            navIdent = "Z600600",
+                        )
+
+                    sjekkTilgang(token, IDENT_MED_TILGANG).apply {
+                        status.value shouldBe 500
+                        val body = bodyAsText()
+                        body.shouldBeValidJson()
+                        val httpProblem = objectMapper.readValue(body, HttpProblem::class.java)
+                        httpProblem.shouldBeInstanceOf<HttpProblem>()
+                        tilgangsmaskinClient.utfallCount("unknown_error") shouldBe 1.0
                     }
                 }
             }

@@ -4,12 +4,12 @@ import no.nav.dagpenger.oidc.OidcToken
 
 interface TilgangsmaskinClientInterface {
     fun harTilgangTilPersonKomplett(
-        ident: String,
+        ident: Ident,
         token: OidcToken,
     ): TilgangsmaskinResponse
 
     fun harTilgangTilPersonKjerne(
-        ident: String,
+        ident: Ident,
         token: OidcToken,
     ): TilgangsmaskinResponse
 }
