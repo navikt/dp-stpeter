@@ -141,8 +141,8 @@ class TilgangsmaskinClient(
     ): TilgangsmaskinResponse =
         withLoggingContextAsync(
             "requestUrl" to call.request.url.toString(),
-            "status" to status.toString(),
-            "komponent" to this.javaClass.simpleName,
+            "status" to status.value.toString(),
+            "komponent" to "tilgangsmaskin",
         ) {
             when (status) {
                 HttpStatusCode.Forbidden -> {
