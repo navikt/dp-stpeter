@@ -17,11 +17,14 @@ class TilgangsmaskinResponseService(
         ident: Ident,
         token: OidcToken,
     ) {
+        logger.info { "Evalurer tilgang til person med regelsett 'komplett'" }
         val response =
             tilgangsmaskinClient.harTilgangTilPersonKomplett(
                 ident = ident,
                 token = token,
             )
+        logger.info { "Mottatt svar fra tilgangsmaskinen" }
+
         withLoggingContext(
             "komponent" to "StPeter",
             "navIdent" to token.navIdent(),
