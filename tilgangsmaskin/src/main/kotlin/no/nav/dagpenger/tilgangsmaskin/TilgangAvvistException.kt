@@ -7,8 +7,8 @@ open class TilgangAvvistException(
     val type: URI,
     val title: String,
     val status: HttpStatusCode,
-    val navIdent: String,
-    val begrunnelse: String,
-    val traceId: String,
-    val kanOverstyres: Boolean,
+    val navIdent: String? = null,
+    val begrunnelse: String? = null,
+    val traceId: String? = null,
+    val kanOverstyres: Boolean? = null,
 ) : RuntimeException(begrunnelse)

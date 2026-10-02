@@ -1,6 +1,4 @@
-package no.nav.dagpenger
-
-import no.nav.dagpenger.api.UnprocessableContentException
+package no.nav.dagpenger.tilgangsmaskin
 
 data class Ident(
     private val ident: String,

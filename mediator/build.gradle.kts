@@ -1,13 +1,13 @@
 plugins {
     id("common")
     application
-    kotlin("plugin.serialization") version "2.4.10"
+    kotlin("plugin.serialization") version "2.4.20"
     alias(libs.plugins.shadow.jar)
 }
 
 dependencies {
 
-    val dpBibliotekerVersion = "2026.09.04-06.19.6163927c6426"
+    val dpBibliotekerVersion = "2026.09.25-06.21.cba57db93eac"
 
     implementation(project(path = ":konfigurasjon"))
     implementation(project(path = ":openapi"))
@@ -17,23 +17,19 @@ dependencies {
     implementation(libs.bundles.jackson)
 
     implementation("tools.jackson.module:jackson-module-blackbird:${libs.versions.jackson.get()}")
-    // implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.22.1")
-    // implementation("com.fasterxml.jackson.core:jackson-annotations:2.22")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.11.0")
 
     implementation("no.nav.dagpenger:oauth2-klient:$dpBibliotekerVersion")
 
     implementation(libs.konfig)
     implementation(libs.kotlin.logging)
-    implementation("io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.31.1")
-    implementation("io.opentelemetry:opentelemetry-api:1.65.0")
-    implementation("io.prometheus:prometheus-metrics-core:1.8.0")
+    implementation("io.prometheus:prometheus-metrics-core:1.9.0")
     implementation("io.micrometer:micrometer-registry-prometheus:1.17.1")
-    implementation("org.slf4j:slf4j-api:2.0.18")
+    implementation("org.slf4j:slf4j-api:2.0.20")
 
-    implementation("ch.qos.logback:logback-classic:1.6.3")
-
-    implementation("io.lettuce:lettuce-core:7.7.0.RELEASE")
+    implementation("ch.qos.logback:logback-classic:1.6.5")
+    implementation("net.logstash.logback:logstash-logback-encoder:9.0")
+    implementation("io.lettuce:lettuce-core:7.8.0.RELEASE")
 
     implementation(libs.bundles.ktor.client)
     implementation(libs.bundles.ktor.server)
@@ -45,6 +41,10 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer:${libs.versions.ktor.get()}")
     implementation("io.ktor:ktor-serialization-jackson3:${libs.versions.ktor.get()}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.11.0")
+    implementation(libs.otel.instrumentation.annotations)
+    implementation(libs.otel.api)
+
+    implementation("io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:2.9.0-alpha")
 
     implementation("no.nav.dagpenger:ktor-client-metrics:$dpBibliotekerVersion")
 
@@ -56,7 +56,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host-jvm:${libs.versions.ktor.get()}")
     testImplementation("io.ktor:ktor-client-content-negotiation:${libs.versions.ktor.get()}")
     testImplementation("com.approvaltests:approvaltests:31.0.0")
-    testImplementation("com.tngtech.archunit:archunit-junit5:1.5.0")
+    testImplementation("com.tngtech.archunit:archunit-junit5:1.5.1")
     testImplementation("io.kotest:kotest-runner-junit5:${libs.versions.kotest.get()}")
     testImplementation("com.redis:testcontainers-redis:2.2.4")
     testImplementation("org.testcontainers:testcontainers:2.0.5")

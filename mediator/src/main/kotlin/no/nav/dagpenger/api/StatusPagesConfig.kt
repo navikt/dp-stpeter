@@ -1,5 +1,6 @@
 package no.nav.dagpenger.api
 
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.HttpStatusCode.Companion.allStatusCodes
@@ -15,11 +16,12 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import no.nav.dagpenger.api.models.HttpProblem
 import no.nav.dagpenger.tilgangsmaskin.NavIdentIkkeFunnetException
+import no.nav.dagpenger.tilgangsmaskin.RequestException
 import no.nav.dagpenger.tilgangsmaskin.TilgangAvvistException
 import java.net.URI
 
 fun StatusPagesConfig.statusPagesConfig() {
-    exception<BehandlingException> { call, cause ->
+    exception<RequestException> { call, cause ->
         call.application.log.warn("domenefeil: ${cause.message}. svarer med ${cause.httpStatus} og HttpProblem", cause)
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
         call.respond(
@@ -38,6 +40,7 @@ fun StatusPagesConfig.statusPagesConfig() {
             ),
         )
     }
+
     exception<NavIdentIkkeFunnetException> { call, cause ->
         call.application.log.info("tilgangsfeil: ${cause.message}. svarer med ${cause.status} og HttpProblem", cause)
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
@@ -61,6 +64,13 @@ fun StatusPagesConfig.statusPagesConfig() {
         call.application.log.info("tilgangsfeil: ${cause.message}. svarer med ${cause.status} og HttpProblem", cause)
 
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
+
+        val extensions =
+            mutableMapOf<String, Any?>(
+                "navIdent" to cause.navIdent,
+                "kanOverstyres" to cause.kanOverstyres,
+                "traceId" to cause.traceId,
+            )
         call.respond(
             cause.status,
             HttpProblem(
@@ -69,10 +79,7 @@ fun StatusPagesConfig.statusPagesConfig() {
                 type = cause.type,
                 detail = cause.message,
                 instance = URI(call.request.uri),
-                properties =
-                    mutableMapOf(
-                        "traceId" to cause.traceId,
-                    ),
+                properties = extensions.filterValues { it != null }.mapValues { it.value!! }.toMutableMap(),
             ),
         )
     }
@@ -107,6 +114,25 @@ fun StatusPagesConfig.statusPagesConfig() {
             ),
         )
     }
+
+    exception<ServerResponseException> { call, cause ->
+        call.application.log.warn(
+            "server response exception: ${cause.message}. svarer med ${cause.response.status} og en feilmelding i JSON",
+            cause,
+        )
+        call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
+        call.respond(
+            cause.response.status,
+            HttpProblem(
+                title = "Serverfeil",
+                status = cause.response.status.value,
+                type = URI("urn:error:server_response_exception"),
+                detail = cause.message,
+                instance = URI(call.request.uri),
+            ),
+        )
+    }
+
     exception<Throwable> { call, cause ->
         call.application.log.error(
             "ukjent feil: ${cause.message}. svarer med InternalServerError og en feilmelding i JSON",

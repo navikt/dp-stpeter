@@ -14,8 +14,8 @@ import io.ktor.http.ContentType
 import io.ktor.serialization.jackson3.JacksonConverter
 import io.ktor.server.auth.jwt.JWTAuthenticationProvider
 import kotlinx.coroutines.runBlocking
+import no.nav.dagpenger.api.auth.validering.autoriser
 import no.nav.dagpenger.konfigurasjon.Configuration
-import no.nav.dagpenger.mediator.api.auth.validering.autoriser
 import no.nav.dagpenger.objectMapper
 import java.net.URI
 import java.net.URL

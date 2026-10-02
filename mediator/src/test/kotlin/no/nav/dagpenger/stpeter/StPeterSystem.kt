@@ -71,10 +71,28 @@ class StPeterSystem(
                     """.trimIndent(),
                 status = HttpStatusCode.NotFound,
             )
+
+        fun tilgangsmaskinError() =
+            ScenarioOptions(
+                content = "",
+                status = HttpStatusCode.InternalServerError,
+            )
+
+        fun tilgangsmaskinIOException() =
+            ScenarioOptions(
+                exceptionToThrow = java.net.SocketTimeoutException("Timeout mot tilgangsmaskin"),
+            )
+
+        fun tilgangsmaskinUventetStatusKode() =
+            ScenarioOptions(
+                content = "",
+                status = HttpStatusCode.OK,
+            )
     }
 
     private val mockEngine =
         MockEngine { _ ->
+            oppsett.exceptionToThrow?.let { throw it }
             respond(
                 content = oppsett.content,
                 status = oppsett.status,
@@ -119,6 +137,7 @@ class StPeterSystem(
         var content: String = "",
         var status: HttpStatusCode = HttpStatusCode.NoContent,
         var contentType: ContentType = ContentType.Application.ProblemJson,
+        var exceptionToThrow: Throwable? = null,
     ) {
         inline fun test(
             redis: RedisTestServer,

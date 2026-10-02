@@ -48,4 +48,6 @@ class OidcToken(
 
         return accessToken.getClaim(NAV_IDENT).asString()
     }
+
+    fun groups(): String = accessToken.getClaim("groups").asList(String::class.java).joinToString(",")
 }

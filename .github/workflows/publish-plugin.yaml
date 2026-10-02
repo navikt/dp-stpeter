@@ -1,0 +1,42 @@
+name: Publish stpeter-plugin
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'stpeter-plugin/**'
+      - 'stpeter-plugin-test/**'
+      - 'buildSrc/**'
+      - '.github/workflows/publish-plugin.yaml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.0.1
+        with:
+          distribution: temurin
+          java-version: 26.0.2+10
+
+      - name: Set release tag
+        run: |
+          export TAG_NAME="$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M).$(echo $GITHUB_SHA | cut -c 1-12)"
+          echo "RELEASE_TAG=$TAG_NAME" >> $GITHUB_ENV
+      - uses: gradle/gradle-build-action@v3
+        name: Build and publish
+        with:
+          arguments: :stpeter-plugin:build :stpeter-plugin-test:build -Pversion=${{ env.RELEASE_TAG }} :stpeter-plugin:publish :stpeter-plugin-test:publish
+        env:
+          ORG_GRADLE_PROJECT_githubUser: x-access-token
+          ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
+      - uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # ratchet:ncipollo/release-action@v1
+        name: Create release
+        with:
+          tag: ${{ env.RELEASE_TAG }}
+          generateReleaseNotes: true

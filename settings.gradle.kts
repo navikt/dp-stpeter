@@ -7,7 +7,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            from("no.nav.dagpenger:dp-version-catalog:20260831.286")
+            from("no.nav.dagpenger:dp-version-catalog:20260919.301")
         }
     }
 }
@@ -20,3 +20,7 @@ include("openapi")
 
 include("tilgangsmaskin")
 include("oidc")
+
+include("stpeter-plugin")
+
+include("stpeter-plugin-test")
