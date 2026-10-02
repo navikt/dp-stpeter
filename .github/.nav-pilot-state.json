@@ -3,60 +3,60 @@
   "version": "2026.09.07-074612-5c0c44d",
   "scope": "repo",
   "source_repo": "navikt/copilot",
-  "source_sha": "f3614e6130e286f4c95141aedf14a34c22a31ebb",
+  "source_sha": "ec6c52538d8db355694301b6fa65a2b48a013933",
   "installed_at": "2026-09-07T10:44:35Z",
   "files": [
     {
       "path": ".github/agents/accessibility.agent.md",
-      "hash": "4ad090f6791eb845"
+      "hash": "03d2ec6ccc4a2101"
     },
     {
       "path": ".github/agents/aksel.agent.md",
-      "hash": "eb6688100005e57f"
+      "hash": "700721ce34d631f5"
     },
     {
       "path": ".github/agents/code-review.agent.md",
-      "hash": "10ce155690b4c835"
+      "hash": "5a019cbf3eda9ce2"
     },
     {
       "path": ".github/agents/forfatter.agent.md",
-      "hash": "4516167e39928ef2"
+      "hash": "aee2b3b98fa5ec39"
     },
     {
       "path": ".github/agents/kafka.agent.md",
-      "hash": "f74565e00c5d0515"
+      "hash": "c2616223f6228f8e"
     },
     {
       "path": ".github/agents/nav-pilot-opus.agent.md",
-      "hash": "9ce0afc59f0a1912"
+      "hash": "9589574e7c94010a"
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "edcfcf867dd98045"
+      "hash": "2727b594e24dc558"
     },
     {
       "path": ".github/agents/research.agent.md",
-      "hash": "b68b9c9b82f12c02"
+      "hash": "22005ea46dec85a0"
     },
     {
       "path": ".github/agents/rust.agent.md",
-      "hash": "8ee97a471ec8b560"
+      "hash": "877fab8c93fa0ae6"
     },
     {
       "path": ".github/agents/security-champion.agent.md",
-      "hash": "2c3200cf23251a70"
+      "hash": "09850437ed89c7bb"
     },
     {
       "path": ".github/hooks/ask-first-aria.py",
-      "hash": "95dccc70382812d5"
+      "hash": "41be8eec026b7bb1"
     },
     {
       "path": ".github/hooks/klarsprak-gate.py",
-      "hash": "d72e6fc1bb74f3f2"
+      "hash": "ecc2bc6b2d637131"
     },
     {
       "path": ".github/instructions/accessibility.instructions.md",
-      "hash": "986ef7aa27d8a1d9"
+      "hash": "c3715d3fc2782a5b"
     },
     {
       "path": ".github/instructions/database.instructions.md",
@@ -64,27 +64,27 @@
     },
     {
       "path": ".github/instructions/deliberate-ai-use.instructions.md",
-      "hash": "68b3ca596e278482"
+      "hash": "5e2d7a2f23285de8"
     },
     {
       "path": ".github/instructions/docker.instructions.md",
-      "hash": "32db7a2f8aaab2ac"
+      "hash": "d29c19982baad0d4"
     },
     {
       "path": ".github/instructions/github-actions.instructions.md",
-      "hash": "bbef6f3e56b8b3b3"
+      "hash": "553b61e739b1430d"
     },
     {
       "path": ".github/instructions/golang.instructions.md",
-      "hash": "b7bdff62f6964099"
+      "hash": "49ac99c6740220c6"
     },
     {
       "path": ".github/instructions/nextjs-aksel.instructions.md",
-      "hash": "75e0932dfe465508"
+      "hash": "342cce96431f6ca5"
     },
     {
       "path": ".github/instructions/norwegian-text.instructions.md",
-      "hash": "9fe4d16cff71a80e"
+      "hash": "25ee167a83661c64"
     },
     {
       "path": ".github/instructions/output-style.instructions.md",
@@ -92,11 +92,11 @@
     },
     {
       "path": ".github/instructions/performance.instructions.md",
-      "hash": "74be7b9e34c1681e"
+      "hash": "cde5b75a73890cbc"
     },
     {
       "path": ".github/instructions/security-owasp.instructions.md",
-      "hash": "3388700634dd315d"
+      "hash": "3829d8b32cac8b70"
     },
     {
       "path": ".github/instructions/testing-kotlin.instructions.md",
@@ -112,35 +112,35 @@
     },
     {
       "path": ".github/prompts/aksel-component.prompt.md",
-      "hash": "721f879cfd8e89da"
+      "hash": "fa646ea49f00e34e"
     },
     {
       "path": ".github/prompts/golang-service.prompt.md",
-      "hash": "dc21d1c2ee4c1685"
+      "hash": "7fde0ad3e0920750"
     },
     {
       "path": ".github/prompts/kafka-topic.prompt.md",
-      "hash": "d485c12c7b6d44d6"
+      "hash": "4dedc8bfb89c321c"
     },
     {
       "path": ".github/prompts/ktor-endpoint.prompt.md",
-      "hash": "78a11bb6d225b664"
+      "hash": "19f9709a094b034e"
     },
     {
       "path": ".github/prompts/nais-manifest.prompt.md",
-      "hash": "f90a562ca7f8233c"
+      "hash": "df650deedb8cf0f0"
     },
     {
       "path": ".github/prompts/nextjs-api-route.prompt.md",
-      "hash": "5f65db6b410ea3e6"
+      "hash": "f5344c834c5fb492"
     },
     {
       "path": ".github/prompts/spring-boot-endpoint.prompt.md",
-      "hash": "82404ec13b5fd880"
+      "hash": "e2e2a7c6af3729b3"
     },
     {
       "path": ".github/skills/ai-news-research/",
-      "hash": "16f2d476983b8ba0"
+      "hash": "3cd92cbaef53b201"
     },
     {
       "path": ".github/skills/aksel-builder/",
@@ -176,7 +176,7 @@
     },
     {
       "path": ".github/skills/klarsprak/",
-      "hash": "fb56b5d272b35480"
+      "hash": "28545e8d5ed779fe"
     },
     {
       "path": ".github/skills/kotlin-app-config/",
@@ -216,7 +216,7 @@
     },
     {
       "path": ".github/skills/observability-debugging/",
-      "hash": "107a99f70451c01b"
+      "hash": "d09dd467d7ce45a7"
     },
     {
       "path": ".github/skills/observability-setup/",
