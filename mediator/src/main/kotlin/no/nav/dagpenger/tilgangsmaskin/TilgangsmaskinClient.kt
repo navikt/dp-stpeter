@@ -32,7 +32,7 @@ class TilgangsmaskinClient(
     val cache: TilgangsmaskinCache,
 ) : TilgangsmaskinClientInterface {
     companion object {
-        private val sikkerlogg = TeamLogg(TilgangsmaskinClient::class)
+        private val teamLogg = TeamLogg(TilgangsmaskinClient::class)
         private val logger = KotlinLogging.logger {}
     }
 
@@ -119,8 +119,8 @@ class TilgangsmaskinClient(
             return response
         } catch (e: IOException) {
             utfall("io_error")
-            sikkerlogg.warn {
-                "Fikk ikke kontakt med tilgangsmaskin (endpoint=$endpoint): ${e.message}"
+            teamLogg.warn(cause = e) {
+                "Fikk ikke kontakt med tilgangsmaskin (endpoint=$endpoint)"
             }
             throw e
         } catch (e: BadRequestException) {
@@ -142,40 +142,39 @@ class TilgangsmaskinClient(
         val requestUrl = call.request.url.toString()
         val statusValue = status.value.toString()
 
-        return sikkerlogg.withContextAsync(
+        return teamLogg.withContextAsync(
             "requestUrl" to requestUrl,
             "status" to statusValue,
+            "navIdent" to token.navIdent(),
+            "ident" to ident.toString(),
         ) {
             when (status) {
                 HttpStatusCode.Forbidden -> {
                     val body = body<TilgangsmaskinResponse.TilgangAvvist>()
                     info(
                         "traceId" to body.traceId,
-                        "navIdent" to body.navIdent,
                         "begrunnelse" to body.title,
                     ) { "Tilgang avvist" }
                     body
                 }
 
                 HttpStatusCode.NoContent -> {
-                    info(
-                        "navIdent" to token.navIdent(),
-                    ) { "Tilgang godkjent" }
+                    info { "Tilgang godkjent" }
                     TilgangsmaskinResponse.TilgangGodkjent()
                 }
 
                 HttpStatusCode.NotFound -> {
                     val body = body<TilgangsmaskinResponse.NavIdentIkkeFunnet>()
-                    info("navIdent" to body.navident) { "NavIdent ikke funnet" }
+                    info { "NavIdent ikke funnet" }
                     body
                 }
 
                 else -> {
                     if (status.value in 400 until 500) {
-                        throw BadRequestException("Feil ved kall til tilgangsmaskinen.")
+                        throw BadRequestException("Feil ved kall til tilgangsmaskinen. Status: $status")
                     }
                     if (status.value in 500 until 600) {
-                        logger.warn { "Feil ved kall tilgangsmaskinen." }
+                        teamLogg.warn { "Feil ved kall tilgangsmaskinen." }
                         throw ServerResponseException(
                             this@toTilgangsmaskinResponse,
                             "Feil ved kall til tilgangsmaskinen.",

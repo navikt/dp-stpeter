@@ -78,6 +78,18 @@ class TeamLoggSpec :
             MDC.get("behandlingId") shouldBe null
         }
 
+        "warn/error skal inkludere cause når den er oppgitt" {
+            val teamLogg = TeamLogg()
+            val exception = RuntimeException("noe gikk galt")
+
+            teamLogg.warn(cause = exception) { "warn-melding" }
+            teamLogg.error(cause = exception) { "error-melding" }
+
+            appender.list shouldHaveSize 2
+            appender.list[0].throwableProxy.message shouldBe "noe gikk galt"
+            appender.list[1].throwableProxy.message shouldBe "noe gikk galt"
+        }
+
         "withContext skal gi alle kall i blokken tilgang på felles kontekst" {
             TeamLogg().withContext("behandlingId" to "123456") {
                 info("team" to "dagpenger") { "melding en" }
@@ -91,20 +103,35 @@ class TeamLoggSpec :
             appender.list[1].mdcPropertyMap shouldContain ("team" to "annet-team")
         }
 
-        "withContext skal gjenopprette tidligere MDC-verdi etter blokken" {
-            MDC.put("behandlingId", "opprinnelig-verdi")
-
+        "withContext skal ikke legge kontekst i MDC før et loggkall skjer" {
             TeamLogg().withContext("behandlingId" to "ny-verdi") {
-                MDC.get("behandlingId") shouldBe "ny-verdi"
+                MDC.get("behandlingId") shouldBe null
             }
 
-            MDC.get("behandlingId") shouldBe "opprinnelig-verdi"
+            MDC.get("behandlingId") shouldBe null
         }
 
-        "withContextAsync skal fungere i en suspend-kontekst og returnere blokkens verdi" {
+        "kontekst fra withContext skal ikke lekke til en annen logger som logger inni samme blokk" {
+            val annenLogger = LoggerFactory.getLogger("annen.logger") as Logger
+            annenLogger.level = Level.TRACE
+            val annenAppender = ListAppender<ILoggingEvent>().apply { start() }
+            annenLogger.addAppender(annenAppender)
+
+            TeamLogg().withContext("behandlingId" to "123456") {
+                info { "melding fra teamLogg" }
+                annenLogger.info("melding fra annen logger")
+            }
+
+            annenLogger.detachAppender(annenAppender)
+            annenAppender.stop()
+
+            annenAppender.list.single().mdcPropertyMap shouldBe emptyMap()
+        }
+
+        "withContextAsync skal fungere i en suspend-kontekst, ikke lekke til MDC, og returnere blokkens verdi" {
             val resultat =
                 TeamLogg().withContextAsync("behandlingId" to "123456") {
-                    MDC.get("behandlingId") shouldBe "123456"
+                    MDC.get("behandlingId") shouldBe null
                     "resultat"
                 }
 
