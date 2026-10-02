@@ -12,15 +12,25 @@ class RedisTestServer : AutoCloseable {
     private val started = AtomicBoolean(false)
     private val redisContainer by lazy { RedisContainer(RedisContainer.DEFAULT_IMAGE_NAME.withTag(RedisContainer.DEFAULT_TAG)) }
 
-    private val uri: URI
-        get() = URI(redisContainer.redisURI)
-
-    internal val server: Redis by lazy { Redis.from(uri) }
+    lateinit var server: Redis
+        private set
 
     fun start() {
         if (!started.compareAndSet(false, true)) return
 
         redisContainer.start()
+
+        val host = redisContainer.host.takeIf { it != "null" && !it.isNullOrBlank() } ?: "localhost"
+
+        val port =
+            try {
+                redisContainer.redisPort
+            } catch (_: Throwable) {
+                redisContainer.firstMappedPort
+            }
+
+        val uri = URI("redis://$host:$port")
+        server = Redis.from(uri)
 
         val timeout = System.currentTimeMillis() + 10.seconds.inWholeMilliseconds
         while (System.currentTimeMillis() < timeout) {

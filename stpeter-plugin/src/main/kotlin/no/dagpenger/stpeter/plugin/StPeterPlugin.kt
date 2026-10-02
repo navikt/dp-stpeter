@@ -45,44 +45,56 @@ class StPeterPlugin(
         token: String,
         vedTilgangBlock: suspend () -> Unit,
     ) {
-        val oboToken = oboExchanger(token)
-        val request =
-            HttpRequest
-                .newBuilder()
-                .uri(URI.create("$url/api/v1/person"))
-                .header("Authorization", "Bearer $oboToken")
-                .header("Accept", "application/problem+json")
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(mapOf("ident" to ident))))
-                .build()
+        try {
+            val oboToken = oboExchanger(token)
+            val request =
+                HttpRequest
+                    .newBuilder()
+                    .uri(URI.create("$url/api/v1/person"))
+                    .header("Authorization", "Bearer $oboToken")
+                    .header("Accept", "application/problem+json")
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(mapOf("ident" to ident))))
+                    .build()
 
-        val response =
-            withContext(Dispatchers.IO) {
-                client.send(request, HttpResponse.BodyHandlers.ofString())
-            }
+            val response =
+                withContext(Dispatchers.IO) {
+                    client.send(request, HttpResponse.BodyHandlers.ofString())
+                }
 
-        when (response.statusCode()) {
-            HttpStatusCode.Forbidden.value -> {
-                throw response.body().tilgangAvvist()
-            }
+            when (response.statusCode()) {
+                HttpStatusCode.Forbidden.value -> {
+                    throw response.body().tilgangAvvist()
+                }
 
-            HttpStatusCode.NoContent.value -> {
-                vedTilgangBlock()
-            }
+                HttpStatusCode.NoContent.value -> {
+                    vedTilgangBlock()
+                }
 
-            HttpStatusCode.NotFound.value -> {
-                throw response.body().tilgangAvvist()
-            }
+                HttpStatusCode.NotFound.value -> {
+                    throw response.body().tilgangAvvist()
+                }
 
-            else -> {
-                throw TilgangAvvistException(
-                    status = HttpStatusCode.Forbidden,
-                    type = URI("urn:error:forbidden"),
-                    detail = "Uventet svar fra stpeter: status=${response.statusCode()}, body=${response.body()}",
-                    instance = URI("$url/api/v1/person"),
-                    title = "En ukjent feil oppstod ved evaluering av tilgang",
-                )
+                else -> {
+                    throw TilgangAvvistException(
+                        status = response.statusCode().let { HttpStatusCode.fromValue(it) },
+                        type = URI("urn:error:unknown"),
+                        detail = "Uventet svar fra stpeter: status=${response.statusCode()}, body=${response.body()}",
+                        instance = URI("$url/api/v1/person"),
+                        title = "En ukjent feil oppstod ved evaluering av tilgang",
+                    )
+                }
             }
+        } catch (e: TilgangAvvistException) {
+            throw e
+        } catch (e: RuntimeException) {
+            throw TilgangAvvistException(
+                status = HttpStatusCode.InternalServerError,
+                type = URI("urn:error:unknown"),
+                detail = "Ukjent feil ved kontakt med StPeter: ${e.message}",
+                instance = URI("$url/api/v1/person"),
+                title = "En ukjent feil oppstod ved evaluering av tilgang",
+            )
         }
     }
 

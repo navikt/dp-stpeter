@@ -83,7 +83,7 @@ spec:
           namespace: tilgangsmaskin
     inbound:
       rules:
-        - application: dp-arena-gw
+        - application: dp-migrering
           namespace: teamdagpenger
           cluster: dev-fss
         {{#if wonderwalled}}

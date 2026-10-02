@@ -1,9 +1,9 @@
-package no.nav.dagpenger.api
+package no.nav.dagpenger.tilgangsmaskin
 
 import io.ktor.http.HttpStatusCode
 import java.net.URI
 
-sealed class BehandlingException(
+sealed class RequestException(
     val httpStatus: HttpStatusCode,
     val type: URI,
     val title: String,

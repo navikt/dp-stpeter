@@ -12,6 +12,8 @@ import no.nav.dagpenger.oidc.OidcToken
 import tools.jackson.module.kotlin.readValue
 
 private const val KEY_PREFIX = "tilgangsmaskin"
+private const val CACHE_HIT_METRIC_NAME = "dp_stpeter_cache_hit"
+private const val CACHE_MISS_METRIC_NAME = "dp_stpeter_cache_miss"
 
 class TilgangsmaskinCache(
     val redis: Redis,
@@ -51,21 +53,21 @@ class TilgangsmaskinCache(
         endpoint: String,
     ): Key = Key(prefix = KEY_PREFIX, value = "${token.navIdent()}_${endpoint}_$ident")
 
-    fun cacheHitCount(): Double = prometheus.counter("cache_hit", listOf(Tag.of("service", KEY_PREFIX))).count()
+    fun cacheHitCount(): Double = prometheus.counter(CACHE_HIT_METRIC_NAME, listOf(Tag.of("service", KEY_PREFIX))).count()
 
-    fun cacheMissCount(): Double = prometheus.counter("cache_miss", listOf(Tag.of("service", KEY_PREFIX))).count()
+    fun cacheMissCount(): Double = prometheus.counter(CACHE_MISS_METRIC_NAME, listOf(Tag.of("service", KEY_PREFIX))).count()
 
     private fun cacheHit() =
         prometheus
             .counter(
-                "cache_hit",
+                CACHE_HIT_METRIC_NAME,
                 listOf(Tag.of("service", KEY_PREFIX)),
             ).increment()
 
     private fun cacheMiss() =
         prometheus
             .counter(
-                "cache_miss",
+                CACHE_MISS_METRIC_NAME,
                 listOf(Tag.of("service", KEY_PREFIX)),
             ).increment()
 }

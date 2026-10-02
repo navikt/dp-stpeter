@@ -4,12 +4,14 @@ plugins {
     id("publish-lib")
 }
 dependencies {
-    val dpBibliotekerVersion = "2026.09.17-06.22.ccf7ed62c283"
+    val dpBibliotekerVersion = "2026.09.25-06.21.cba57db93eac"
 
     implementation(libs.bundles.ktor.client)
     implementation("no.nav.dagpenger:ktor-client-metrics:$dpBibliotekerVersion")
+
     implementation("io.prometheus:prometheus-metrics-core:1.9.0")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.16.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.17.1")
+
     implementation("tools.jackson.module:jackson-module-blackbird:${libs.versions.jackson.get()}")
     implementation("no.nav.dagpenger:oauth2-klient:$dpBibliotekerVersion")
 
