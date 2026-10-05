@@ -1,43 +1,35 @@
 package no.nav.dagpenger.tilgangsmaskin
 
-import io.github.oshai.kotlinlogging.KotlinLogging
-import io.github.oshai.kotlinlogging.withLoggingContext
 import io.ktor.http.HttpStatusCode
+import no.nav.dagpenger.logging.TeamLogg
 import no.nav.dagpenger.oidc.OidcToken
 
 class TilgangsmaskinResponseService(
     val tilgangsmaskinClient: TilgangsmaskinClientInterface,
 ) {
     companion object {
-        private val sikkerlogg = KotlinLogging.logger("tjenestekall")
-        private val logger = KotlinLogging.logger {}
+        private val teamLogg = TeamLogg(TilgangsmaskinResponseService::class)
     }
 
     fun evaluerTilgangTilPersonKomplett(
         ident: Ident,
         token: OidcToken,
     ) {
-        logger.info { "Evalurer tilgang til person med regelsett 'komplett'" }
-        val response =
-            tilgangsmaskinClient.harTilgangTilPersonKomplett(
-                ident = ident,
-                token = token,
-            )
-        logger.info { "Mottatt svar fra tilgangsmaskinen" }
-
-        withLoggingContext(
-            "komponent" to "StPeter",
+        teamLogg.withContext(
+            "ident" to ident.toString(),
             "navIdent" to token.navIdent(),
         ) {
+            info { "Evalurer tilgang til person med regelsett 'komplett'" }
+            val response =
+                tilgangsmaskinClient.harTilgangTilPersonKomplett(
+                    ident = ident,
+                    token = token,
+                )
+            info { "Mottatt svar fra tilgangsmaskinen" }
+
             when (response) {
                 is TilgangsmaskinResponse.TilgangAvvist -> {
-                    withLoggingContext(
-                        "ident" to "$ident",
-                        "traceId" to response.traceId,
-                        "begrunnelse" to response.title,
-                    ) {
-                        sikkerlogg.info { "Tilgang avvist" }
-                    }
+                    info { "Svarer med TilgangAvvistException" }
                     throw TilgangAvvistException(
                         type = response.type,
                         status = HttpStatusCode.fromValue(response.status),
@@ -50,12 +42,7 @@ class TilgangsmaskinResponseService(
                 }
 
                 is TilgangsmaskinResponse.NavIdentIkkeFunnet -> {
-                    withLoggingContext(
-                        "ident" to "$ident",
-                        "begrunnelse" to response.title,
-                    ) {
-                        sikkerlogg.info { "Tilgang avvist" }
-                    }
+                    info { "Svarer med NavIdentIkkeFunnetException" }
                     throw NavIdentIkkeFunnetException(
                         detail = response.detail,
                         instance = response.instance,
@@ -66,11 +53,7 @@ class TilgangsmaskinResponseService(
                 }
 
                 is TilgangsmaskinResponse.TilgangGodkjent -> {
-                    withLoggingContext(
-                        "ident" to "$ident",
-                    ) {
-                        sikkerlogg.info { "Tilgang godkjent" }
-                    }
+                    info { "Svarer med TilgangGodkjent" }
                 }
             }
         }

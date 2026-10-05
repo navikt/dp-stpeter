@@ -20,7 +20,7 @@ import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import io.prometheus.metrics.model.registry.PrometheusRegistry
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.IOException
-import no.nav.dagpenger.TeamLogg
+import no.nav.dagpenger.logging.TeamLogg
 import no.nav.dagpenger.oidc.OidcToken
 
 private const val METRIC_NAME = "dp_stpeter_tilgangsmaskin_klient"
@@ -101,37 +101,56 @@ class TilgangsmaskinClient(
         token: OidcToken,
         ident: Ident,
     ): TilgangsmaskinResponse {
-        try {
-            val response =
-                httpClient
-                    .post("$tilgangsMaskinApiUrl/api/v1/$endpoint") {
-                        val oboToken = tokenProvider.invoke(token.token())
-                        header(HttpHeaders.Authorization, "Bearer $oboToken")
-                        header(HttpHeaders.ContentType, ContentType.Application.Json)
-                        accept(ContentType.Application.ProblemJson)
-                        accept(ContentType.Application.Json)
-                        accept(ContentType.Text.Plain)
-                        setBody(ident.identifikator())
-                    }.toTilgangsmaskinResponse(token, ident)
+        return teamLogg.withContextAsync(
+            "navIdent" to token.navIdent(),
+            "ident" to ident.toString(),
+            "endpoint" to endpoint,
+        ) {
+            try {
+                teamLogg.info { "Sender forespørsel til tilgangsmaskin" }
+                val response =
+                    httpClient
+                        .post("$tilgangsMaskinApiUrl/api/v1/$endpoint") {
+                            val oboToken = tokenProvider.invoke(token.token())
+                            header(HttpHeaders.Authorization, "Bearer $oboToken")
+                            header(HttpHeaders.ContentType, ContentType.Application.Json)
+                            accept(ContentType.Application.ProblemJson)
+                            accept(ContentType.Application.Json)
+                            accept(ContentType.Text.Plain)
+                            setBody(ident.identifikator())
+                        }.toTilgangsmaskinResponse(token, ident)
 
-            utfall("success")
+                utfall("success")
+                teamLogg.info { "Mottatt svar fra tilgangsmaskin" }
 
-            return response
-        } catch (e: IOException) {
-            utfall("io_error")
-            teamLogg.warn(cause = e) {
-                "Fikk ikke kontakt med tilgangsmaskin (endpoint=$endpoint)"
+                return@withContextAsync response
+            } catch (e: IOException) {
+                utfall("io_error")
+                teamLogg.warn(cause = e) {
+                    "Fikk ikke kontakt med tilgangsmaskin"
+                }
+                throw e
+            } catch (e: BadRequestException) {
+                utfall("client_error")
+                teamLogg.warn(cause = e) {
+                    "Feil ved kall til tilgangsmaskinen"
+                }
+                throw e
+            } catch (e: ServerResponseException) {
+                utfall("server_error")
+                teamLogg.warn(cause = e) {
+                    "Feil ved kall til tilgangsmaskinen"
+                }
+                throw e
+            } catch (e: RuntimeException) {
+                utfall("unknown_error")
+                teamLogg.warn(cause = e) {
+                    "Ukjent feil ved kall til tilgangsmaskinen"
+                }
+                throw e
+            } finally {
+                teamLogg.info { "Ferdig med forespørsel til tilgangsmaskin" }
             }
-            throw e
-        } catch (e: BadRequestException) {
-            utfall("client_error")
-            throw e
-        } catch (e: ServerResponseException) {
-            utfall("server_error")
-            throw e
-        } catch (e: RuntimeException) {
-            utfall("unknown_error")
-            throw e
         }
     }
 
@@ -177,7 +196,7 @@ class TilgangsmaskinClient(
                         teamLogg.warn { "Feil ved kall tilgangsmaskinen." }
                         throw ServerResponseException(
                             this@toTilgangsmaskinResponse,
-                            "Feil ved kall til tilgangsmaskinen.",
+                            "Feil ved kall til tilgangsmaskinen. Status: $status",
                         )
                     }
                     logger.warn { "Feil ved kall tilgangsmaskinen." }

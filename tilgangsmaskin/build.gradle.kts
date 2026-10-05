@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(project(path = ":openapi"))
     implementation(project(path = ":oidc"))
+    implementation(project(path = ":logging"))
 
     implementation(libs.kotlin.logging)
     implementation("io.ktor:ktor-http-jvm:${libs.versions.ktor.get()}")

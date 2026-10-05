@@ -42,7 +42,7 @@ fun StatusPagesConfig.statusPagesConfig() {
     }
 
     exception<NavIdentIkkeFunnetException> { call, cause ->
-        call.application.log.info("tilgangsfeil: ${cause.message}. svarer med ${cause.status} og HttpProblem", cause)
+
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
         call.respond(
             cause.status,
@@ -61,10 +61,8 @@ fun StatusPagesConfig.statusPagesConfig() {
     }
 
     exception<TilgangAvvistException> { call, cause ->
-        call.application.log.info("tilgangsfeil: ${cause.message}. svarer med ${cause.status} og HttpProblem", cause)
 
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
-
         val extensions =
             mutableMapOf<String, Any?>(
                 "navIdent" to cause.navIdent,
@@ -85,10 +83,7 @@ fun StatusPagesConfig.statusPagesConfig() {
     }
 
     exception<BadRequestException> { call, cause ->
-        call.application.log.warn(
-            "bad request: ${cause.message}. svarer med BadRequest og en feilmelding i JSON",
-            cause,
-        )
+
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
         call.respond(
             HttpStatusCode.BadRequest,
@@ -116,10 +111,7 @@ fun StatusPagesConfig.statusPagesConfig() {
     }
 
     exception<ServerResponseException> { call, cause ->
-        call.application.log.warn(
-            "server response exception: ${cause.message}. svarer med ${cause.response.status} og en feilmelding i JSON",
-            cause,
-        )
+
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
         call.respond(
             cause.response.status,
@@ -134,10 +126,7 @@ fun StatusPagesConfig.statusPagesConfig() {
     }
 
     exception<Throwable> { call, cause ->
-        call.application.log.error(
-            "ukjent feil: ${cause.message}. svarer med InternalServerError og en feilmelding i JSON",
-            cause,
-        )
+
         call.response.header("Content-Type", ContentType.Application.ProblemJson.toString())
         call.respond(
             HttpStatusCode.InternalServerError,

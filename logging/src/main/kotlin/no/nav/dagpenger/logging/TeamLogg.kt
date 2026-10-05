@@ -1,4 +1,4 @@
-package no.nav.dagpenger
+package no.nav.dagpenger.logging
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.oshai.kotlinlogging.withLoggingContext

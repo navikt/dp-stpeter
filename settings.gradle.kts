@@ -24,3 +24,4 @@ include("oidc")
 include("stpeter-plugin")
 
 include("stpeter-plugin-test")
+include("logging")
