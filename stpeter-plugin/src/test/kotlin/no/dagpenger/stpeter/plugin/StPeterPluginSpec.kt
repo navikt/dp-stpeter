@@ -44,6 +44,22 @@ class StPeterPluginSpec :
                                 ),
                     ) {
                     }
+
+                    stPeter.vedTilgangTilPersonUtenOppslagslogg(
+                        ident = "12345678901",
+                        token =
+                            stPeterMock
+                                .issueToken(
+                                    issuerId = "azureAd",
+                                    audience = "dp-arena-innsyn",
+                                    claims =
+                                        mapOf(
+                                            "idtyp" to "app",
+                                            "azp_name" to "dp-arena-innsyn",
+                                        ),
+                                ),
+                    ) {
+                    }
                 }
             }
         }

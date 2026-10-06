@@ -1,6 +1,7 @@
 package no.dagpenger.stpeter.plugin
 
 class StPeterConfig(
+    val appName: String = getEnvOrSystem("NAIS_APP_NAME"),
     val url: String = getEnvOrSystem("STPETER_URL"),
     val scope: String = getEnvOrSystem("STPETER_SCOPE"),
     val clientId: String = getEnvOrSystem("AZURE_APP_CLIENT_ID"),
@@ -10,6 +11,7 @@ class StPeterConfig(
     val tokenEndpoint: String = getEnvOrSystem("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"),
 ) {
     constructor(config: Map<String, String>) : this(
+        appName = config["NAIS_APP_NAME"] ?: error("Missing NAIS_APP_NAME in config"),
         url = config["STPETER_URL"] ?: error("Missing STPETER_URL in config"),
         scope = config["STPETER_SCOPE"] ?: error("Missing STPETER_SCOPE in config"),
         clientId = config["AZURE_APP_CLIENT_ID"] ?: error("Missing AZURE_APP_CLIENT_ID in config"),
@@ -23,6 +25,7 @@ class StPeterConfig(
 
     fun toMap(): Map<String, String> =
         mapOf(
+            "NAIS_APP_NAME" to appName,
             "STPETER_URL" to url,
             "STPETER_SCOPE" to scope,
             "AZURE_APP_CLIENT_ID" to clientId,
@@ -34,7 +37,7 @@ class StPeterConfig(
 
     // Unngår at hemmeligheter havner i logger via default toString()/logging av config-objektet.
     override fun toString(): String =
-        "StPeterConfig(url='$url', scope='$scope', clientId='$clientId', clientSecret='******', " +
+        "StPeterConfig(appName='$appName', url='$url', scope='$scope', clientId='$clientId', clientSecret='******', " +
             "jwk='******', wellKnownUrl='$wellKnownUrl', tokenEndpoint='$tokenEndpoint')"
 }
 

@@ -1,5 +1,8 @@
 package no.nav.dagpenger.tilgangsmaskin
 
+import no.nav.dagpenger.api.models.IdentForesporsel
+import no.nav.dagpenger.tilgangsmaskin.Ident.Companion.tilPersonIdentfikator
+
 data class Ident(
     private val ident: String,
 ) {
@@ -21,3 +24,5 @@ data class Ident(
 
     override fun toString(): String = "Ident(${ident.substring(0, 6)}*****)"
 }
+
+fun IdentForesporsel.tilIdent() = this.ident.tilPersonIdentfikator()

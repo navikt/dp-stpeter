@@ -3,6 +3,7 @@ package no.nav.dagpenger.stpeter
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
+import io.ktor.server.plugins.callid.callId
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -37,12 +38,12 @@ internal fun Application.stpeterApi(
 
             authenticate("azureAd") {
                 post("/person") {
-                    val identForespørsel = call.receive<IdentForesporsel>()
-                    val ident = identForespørsel.ident.tilPersonIdentfikator()
+                    val identForesporsel = call.receive<IdentForesporsel>()
 
                     tilgangsmaskinResponseService.evaluerTilgangTilPersonKomplett(
-                        ident = ident,
+                        identForesporsel = identForesporsel,
                         token = call.token(),
+                        callId = call.callId,
                     )
                     call.respond(HttpStatusCode.NoContent)
                 }

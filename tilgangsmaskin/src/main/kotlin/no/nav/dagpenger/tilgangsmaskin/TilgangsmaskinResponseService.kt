@@ -1,6 +1,8 @@
 package no.nav.dagpenger.tilgangsmaskin
 
 import io.ktor.http.HttpStatusCode
+import no.nav.dagpenger.api.models.IdentForesporsel
+import no.nav.dagpenger.logging.Oppslagslogg
 import no.nav.dagpenger.logging.TeamLogg
 import no.nav.dagpenger.oidc.OidcToken
 
@@ -9,12 +11,16 @@ class TilgangsmaskinResponseService(
 ) {
     companion object {
         private val teamLogg = TeamLogg(TilgangsmaskinResponseService::class)
+        private val oppslagslogg = Oppslagslogg()
     }
 
     fun evaluerTilgangTilPersonKomplett(
-        ident: Ident,
+        identForesporsel: IdentForesporsel,
         token: OidcToken,
+        callId: String?,
     ) {
+        val ident = identForesporsel.tilIdent()
+
         teamLogg.withContext(
             "ident" to ident.toString(),
             "navIdent" to token.navIdent(),
@@ -54,6 +60,14 @@ class TilgangsmaskinResponseService(
 
                 is TilgangsmaskinResponse.TilgangGodkjent -> {
                     info { "Svarer med TilgangGodkjent" }
+                    if (identForesporsel.oppslagslogg) {
+                        oppslagslogg.les(
+                            appName = identForesporsel.application,
+                            navIdent = token.navIdent(),
+                            borgerIdent = ident.identifikator(),
+                            callId = callId,
+                        )
+                    }
                 }
             }
         }

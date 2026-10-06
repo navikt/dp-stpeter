@@ -278,7 +278,16 @@ private suspend fun TestContext.sjekkTilgang(
     client
         .post {
             url("/api/v1/person")
-            setBody("""{"ident":"$ident"}""")
+            setBody(
+                // language=JSON
+                """
+                {
+                "ident": "$ident",
+                "oppslagslogg": true,
+                "application": "test"
+                }
+                """.trimIndent(),
+            )
             this.header(HttpHeaders.Authorization, "Bearer $token")
             this.header(HttpHeaders.Accept, "application/problem+json")
             this.header(HttpHeaders.ContentType, ContentType.Application.Json.toString())

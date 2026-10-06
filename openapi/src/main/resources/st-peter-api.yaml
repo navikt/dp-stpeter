@@ -53,11 +53,20 @@ components:
       type: object
       required:
         - ident
+        - oppslagslogg
+        - application
       properties:
         ident:
           description: Fødselsnummer eller D-nummer til en person. Må være 11 siffer.
           type: string
           pattern: "^[0-9]{11}$"
+        oppslagslogg:
+          description: Om oppslag skal logges i oppslagsloggen. Default er true.
+          type: boolean
+          default: true
+        application:
+          description: Navn på applikasjon som gjør oppslaget.
+          type: string
 
     HttpProblem:
       type: object

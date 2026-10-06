@@ -49,6 +49,8 @@ dependencies {
 
     implementation("no.nav.dagpenger:ktor-client-metrics:$dpBibliotekerVersion")
 
+    api("com.fasterxml.uuid:java-uuid-generator:5.2.0")
+
     testImplementation("io.kotest:kotest-assertions-core-jvm:${libs.versions.kotest.get()}")
     testImplementation("io.kotest:kotest-assertions-json:${libs.versions.kotest.get()}")
     testImplementation("io.kotest:kotest-runner-junit5:${libs.versions.kotest.get()}")

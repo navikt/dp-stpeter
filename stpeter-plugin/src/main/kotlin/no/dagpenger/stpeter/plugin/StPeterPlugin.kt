@@ -3,6 +3,7 @@ package no.dagpenger.stpeter.plugin
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import no.nav.dagpenger.api.models.IdentForesporsel
 import no.nav.dagpenger.oauth2.CachedOauth2Client
 import no.nav.dagpenger.oauth2.OAuth2Config
 import java.net.URI
@@ -45,8 +46,31 @@ class StPeterPlugin(
         token: String,
         vedTilgangBlock: suspend () -> Unit,
     ) {
+        vedTilgangTilPerson(ident, token, oppslagslogg = true, vedTilgangBlock)
+    }
+
+    suspend fun vedTilgangTilPersonUtenOppslagslogg(
+        ident: String,
+        token: String,
+        vedTilgangBlock: suspend () -> Unit,
+    ) {
+        vedTilgangTilPerson(ident, token, oppslagslogg = false, vedTilgangBlock)
+    }
+
+    private suspend fun vedTilgangTilPerson(
+        ident: String,
+        token: String,
+        oppslagslogg: Boolean,
+        vedTilgangBlock: suspend () -> Unit,
+    ) {
         try {
             val oboToken = oboExchanger(token)
+            val identForesporsel =
+                IdentForesporsel(
+                    ident = ident,
+                    oppslagslogg = oppslagslogg,
+                    application = config.appName,
+                )
             val request =
                 HttpRequest
                     .newBuilder()
@@ -54,7 +78,7 @@ class StPeterPlugin(
                     .header("Authorization", "Bearer $oboToken")
                     .header("Accept", "application/problem+json")
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(mapOf("ident" to ident))))
+                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(identForesporsel)))
                     .build()
 
             val response =

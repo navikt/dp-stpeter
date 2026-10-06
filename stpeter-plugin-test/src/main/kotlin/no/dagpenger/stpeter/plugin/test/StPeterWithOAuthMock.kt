@@ -27,6 +27,7 @@ class StPeterWithOAuthMock {
         config.clear()
         config.putAll(
             mapOf(
+                "NAIS_APP_NAME" to "dp-arena-innsyn",
                 "STPETER_URL" to stPeterMockServer.url(),
                 "STPETER_SCOPE" to stPeterMockServer.scope,
                 "AZURE_APP_WELL_KNOWN_URL" to mockOAuth2Server.wellKnownUrl("azureAd").toString(),

@@ -27,6 +27,7 @@ class StPeterMockServer {
                             token.audience?.firstOrNull { it == scope }
                                 ?: return MockResponse().setResponseCode(HttpStatusCode.Unauthorized.value)
                         } ?: return MockResponse().setResponseCode(HttpStatusCode.Unauthorized.value)
+
                         return when (responseStatus) {
                             HttpStatusCode.NoContent -> {
                                 MockResponse().setResponseCode(HttpStatusCode.NoContent.value)
