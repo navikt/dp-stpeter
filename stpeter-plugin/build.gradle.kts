@@ -6,8 +6,6 @@ plugins {
 dependencies {
     val dpBibliotekerVersion = "2026.10.05-18.24.72dfe9185852"
 
-    implementation(project(path = ":openapi"))
-
     implementation(libs.bundles.ktor.client)
     implementation("no.nav.dagpenger:ktor-client-metrics:$dpBibliotekerVersion")
 

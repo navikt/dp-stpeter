@@ -3,7 +3,6 @@ package no.dagpenger.stpeter.plugin
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import no.nav.dagpenger.api.models.IdentForesporsel
 import no.nav.dagpenger.oauth2.CachedOauth2Client
 import no.nav.dagpenger.oauth2.OAuth2Config
 import java.net.URI
@@ -66,10 +65,10 @@ class StPeterPlugin(
         try {
             val oboToken = oboExchanger(token)
             val identForesporsel =
-                IdentForesporsel(
-                    ident = ident,
-                    oppslagslogg = oppslagslogg,
-                    application = config.appName,
+                mapOf(
+                    "ident" to ident,
+                    "oppslagslogg" to oppslagslogg,
+                    "application" to config.appName,
                 )
             val request =
                 HttpRequest

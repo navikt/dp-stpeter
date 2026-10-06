@@ -15,7 +15,6 @@ import no.nav.dagpenger.api.auth.AuthFactory
 import no.nav.dagpenger.api.authenticationConfig
 import no.nav.dagpenger.api.models.IdentForesporsel
 import no.nav.dagpenger.api.token
-import no.nav.dagpenger.tilgangsmaskin.Ident.Companion.tilPersonIdentfikator
 import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinClient
 import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinResponseService
 
