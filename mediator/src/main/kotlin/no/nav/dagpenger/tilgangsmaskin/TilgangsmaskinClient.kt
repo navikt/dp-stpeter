@@ -1,6 +1,5 @@
 package no.nav.dagpenger.tilgangsmaskin
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ServerResponseException
@@ -20,8 +19,10 @@ import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import io.prometheus.metrics.model.registry.PrometheusRegistry
 import kotlinx.coroutines.runBlocking
 import kotlinx.io.IOException
+import no.nav.dagpenger.api.models.IdentForesporsel
 import no.nav.dagpenger.logging.TeamLogg
 import no.nav.dagpenger.oidc.OidcToken
+import no.nav.dagpenger.toContextMap
 
 private const val METRIC_NAME = "dp_stpeter_tilgangsmaskin_klient"
 
@@ -33,7 +34,6 @@ class TilgangsmaskinClient(
 ) : TilgangsmaskinClientInterface {
     companion object {
         private val teamLogg = TeamLogg(TilgangsmaskinClient::class)
-        private val logger = KotlinLogging.logger {}
     }
 
     private val prometheus =
@@ -51,27 +51,36 @@ class TilgangsmaskinClient(
     fun utfallCount(name: String): Double = prometheus.counter(METRIC_NAME, listOf(Tag.of("utfall", name))).count()
 
     override fun harTilgangTilPersonKomplett(
-        ident: Ident,
+        ident: IdentForesporsel,
         token: OidcToken,
-    ): TilgangsmaskinResponse = sjekkTilgang(ident, token, "komplett")
+        callId: String?,
+    ): TilgangsmaskinResponse = sjekkTilgang(ident, token, "komplett", callId = callId)
 
     override fun harTilgangTilPersonKjerne(
-        ident: Ident,
+        ident: IdentForesporsel,
         token: OidcToken,
-    ): TilgangsmaskinResponse = sjekkTilgang(ident, token, "kjerne")
+        callId: String?,
+    ): TilgangsmaskinResponse = sjekkTilgang(ident, token, "kjerne", callId)
 
     private fun sjekkTilgang(
-        ident: Ident,
+        identForesporsel: IdentForesporsel,
         token: OidcToken,
         endpoint: String,
+        callId: String?,
     ): TilgangsmaskinResponse =
         runBlocking {
             cache
                 .get(
                     token = token,
-                    ident = ident.identifikator(),
+                    ident = identForesporsel.ident,
                     endpoint = endpoint,
                 )?.let {
+                    teamLogg.info(
+                        "navIdent" to token.navIdent(),
+                        "endpoint" to endpoint,
+                        "callId" to callId,
+                        *identForesporsel.toContextMap(),
+                    ) { "Fant svar i cache" }
                     return@runBlocking it
                 }
 
@@ -84,11 +93,17 @@ class TilgangsmaskinClient(
             // Vurder om "io_error" (tapt kontakt/timeout) bør skilles fra "server_error" i egen
             // alert med strengere terskel, siden det kan indikere nettverks-/DNS-problemer og
             // ikke bare at tilgangsmaskin selv svarer med feil.
-            val response = requestTilgangsmaskin(endpoint, token, ident)
+            val response =
+                requestTilgangsmaskin(
+                    endpoint = endpoint,
+                    token = token,
+                    identForesporsel = identForesporsel,
+                    callId = callId,
+                )
 
             cache.set(
                 token = token,
-                ident = ident.identifikator(),
+                ident = identForesporsel.ident,
                 endpoint = endpoint,
                 value = response,
             )
@@ -99,12 +114,14 @@ class TilgangsmaskinClient(
     private suspend fun requestTilgangsmaskin(
         endpoint: String,
         token: OidcToken,
-        ident: Ident,
+        identForesporsel: IdentForesporsel,
+        callId: String?,
     ): TilgangsmaskinResponse {
         return teamLogg.withContextAsync(
             "navIdent" to token.navIdent(),
-            "ident" to ident.toString(),
             "endpoint" to endpoint,
+            "callId" to callId,
+            *identForesporsel.toContextMap(),
         ) {
             try {
                 teamLogg.info { "Sender forespørsel til tilgangsmaskin" }
@@ -117,8 +134,8 @@ class TilgangsmaskinClient(
                             accept(ContentType.Application.ProblemJson)
                             accept(ContentType.Application.Json)
                             accept(ContentType.Text.Plain)
-                            setBody(ident.identifikator())
-                        }.toTilgangsmaskinResponse(token, ident)
+                            setBody(identForesporsel.ident)
+                        }.toTilgangsmaskinResponse(token = token, identForesporsel = identForesporsel, callId = callId)
 
                 utfall("success")
                 teamLogg.info { "Mottatt svar fra tilgangsmaskin" }
@@ -156,7 +173,8 @@ class TilgangsmaskinClient(
 
     private suspend fun HttpResponse.toTilgangsmaskinResponse(
         token: OidcToken,
-        ident: Ident,
+        identForesporsel: IdentForesporsel,
+        callId: String?,
     ): TilgangsmaskinResponse {
         val requestUrl = call.request.url.toString()
         val statusValue = status.value.toString()
@@ -165,7 +183,8 @@ class TilgangsmaskinClient(
             "requestUrl" to requestUrl,
             "status" to statusValue,
             "navIdent" to token.navIdent(),
-            "ident" to ident.toString(),
+            "callId" to callId,
+            *identForesporsel.toContextMap(),
         ) {
             when (status) {
                 HttpStatusCode.Forbidden -> {
@@ -173,33 +192,32 @@ class TilgangsmaskinClient(
                     info(
                         "traceId" to body.traceId,
                         "begrunnelse" to body.title,
-                    ) { "Tilgang avvist" }
+                    ) { "Tilgang avvist ($status)" }
                     body
                 }
 
                 HttpStatusCode.NoContent -> {
-                    info { "Tilgang godkjent" }
+                    info { "Tilgang godkjent ($status)" }
                     TilgangsmaskinResponse.TilgangGodkjent()
                 }
 
                 HttpStatusCode.NotFound -> {
                     val body = body<TilgangsmaskinResponse.NavIdentIkkeFunnet>()
-                    info { "NavIdent ikke funnet" }
+                    info { "NavIdent ikke funnet ($status)" }
                     body
                 }
 
                 else -> {
+                    teamLogg.warn { "Feil ved kall tilgangsmaskinen ($status)." }
                     if (status.value in 400 until 500) {
                         throw BadRequestException("Feil ved kall til tilgangsmaskinen. Status: $status")
                     }
                     if (status.value in 500 until 600) {
-                        teamLogg.warn { "Feil ved kall tilgangsmaskinen." }
                         throw ServerResponseException(
                             this@toTilgangsmaskinResponse,
                             "Feil ved kall til tilgangsmaskinen. Status: $status",
                         )
                     }
-                    logger.warn { "Feil ved kall tilgangsmaskinen." }
                     throw RuntimeException("Ukjent feil ved kall til tilgangsmaskin status: $status")
                 }
             }

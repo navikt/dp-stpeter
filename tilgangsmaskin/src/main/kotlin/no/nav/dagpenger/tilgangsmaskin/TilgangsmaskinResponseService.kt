@@ -5,6 +5,8 @@ import no.nav.dagpenger.api.models.IdentForesporsel
 import no.nav.dagpenger.logging.Oppslagslogg
 import no.nav.dagpenger.logging.TeamLogg
 import no.nav.dagpenger.oidc.OidcToken
+import no.nav.dagpenger.toContextMap
+import kotlin.to
 
 class TilgangsmaskinResponseService(
     val tilgangsmaskinClient: TilgangsmaskinClientInterface,
@@ -22,14 +24,16 @@ class TilgangsmaskinResponseService(
         val ident = identForesporsel.tilIdent()
 
         teamLogg.withContext(
-            "ident" to ident.toString(),
             "navIdent" to token.navIdent(),
+            "callId" to callId,
+            *identForesporsel.toContextMap(),
         ) {
-            info { "Evalurer tilgang til person med regelsett 'komplett'" }
+            info { "Evaluerer tilgang til person med regelsett 'komplett'" }
             val response =
                 tilgangsmaskinClient.harTilgangTilPersonKomplett(
-                    ident = ident,
+                    ident = identForesporsel,
                     token = token,
+                    callId = callId,
                 )
             info { "Mottatt svar fra tilgangsmaskinen" }
 

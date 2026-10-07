@@ -27,6 +27,12 @@ paths:
       responses:
         "204":
           description: Saksbehandler har tilgang til bruker
+        "400":
+          description: Forespørselen inneholder ugyldig applikasjonsnavn eller rutemal
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/HttpProblem"
         "403":
           description: Saksbehandler har ikke tilgang til bruker
           content:
@@ -65,8 +71,18 @@ components:
           type: boolean
           default: true
         application:
-          description: Navn på applikasjon som gjør oppslaget.
+          description: Navn på applikasjonen som gjør oppslaget.
           type: string
+          minLength: 1
+          maxLength: 100
+          pattern: "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$"
+        originRoute:
+          description: >-
+            Rutemal hos klienten som startet oppslaget. Bruk {parameter} for dynamiske segmenter.
+            Ikke ta med query-parametere eller konkrete identifikatorer.
+          type: string
+          maxLength: 200
+          pattern: "^/(?:[A-Za-z][A-Za-z._~-]*|v[0-9]{1,2}|\\{[A-Za-z][A-Za-z0-9_]*\\})(?:/(?:[A-Za-z][A-Za-z._~-]*|v[0-9]{1,2}|\\{[A-Za-z][A-Za-z0-9_]*\\}))*$"
 
     HttpProblem:
       type: object

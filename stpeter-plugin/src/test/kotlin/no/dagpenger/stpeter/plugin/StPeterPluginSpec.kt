@@ -42,6 +42,7 @@ class StPeterPluginSpec :
                                             "azp_name" to "dp-arena-innsyn",
                                         ),
                                 ),
+                        originRoute = "/test/{ident}",
                     ) {
                     }
 
@@ -64,6 +65,27 @@ class StPeterPluginSpec :
             }
         }
 
+        "skal avvise originRoute som ikke er en trygg rutemal" {
+            listOf(
+                "/person/12345678901",
+                "/person/123456",
+                "/person/id-123456",
+                "/person/550e8400-e29b-41d4-a716-446655440000",
+                "/person/id-550e8400-e29b-41d4-a716-446655440000",
+                "/person/{ident}?mode=full",
+                "https://client.nav.no/person",
+                "/${"a".repeat(200)}",
+            ).forEach { route ->
+                shouldThrow<IllegalArgumentException> {
+                    stPeter.vedTilgangTilPerson(
+                        ident = "12345678901",
+                        token = "not-used",
+                        originRoute = route,
+                    ) {}
+                }
+            }
+        }
+
         "skal kaste exception når tilgang til person blir avvist" {
             val exception =
                 shouldThrow<TilgangAvvistException> {
@@ -81,6 +103,7 @@ class StPeterPluginSpec :
                                                 "azp_name" to "dp-arena-innsyn",
                                             ),
                                     ),
+                            originRoute = "/test/{ident}",
                         ) {
                         }
                     }

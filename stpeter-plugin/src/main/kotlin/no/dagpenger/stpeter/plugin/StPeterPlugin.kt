@@ -10,6 +10,10 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
+private const val MAX_ORIGIN_ROUTE_LENGTH = 200
+
+private val ROUTE_SEGMENT_PATTERN = Regex("[A-Za-z][A-Za-z._~-]*|v[0-9]{1,2}|\\{[A-Za-z][A-Za-z0-9_]*}")
+
 class StPeterPlugin(
     private val config: StPeterConfig = StPeterConfig(),
 ) {
@@ -43,25 +47,38 @@ class StPeterPlugin(
     suspend fun vedTilgangTilPerson(
         ident: String,
         token: String,
+        /**
+         *  Rutemal hos klienten som startet oppslaget. Bruk {parameter} for dynamiske segmenter.
+         *  Ikke ta med query-parametere eller konkrete identifikatorer.
+         */
+        originRoute: String? = null,
         vedTilgangBlock: suspend () -> Unit,
     ) {
-        vedTilgangTilPerson(ident, token, oppslagslogg = true, vedTilgangBlock)
+        vedTilgangTilPerson(ident, token, oppslagslogg = true, originRoute = originRoute, vedTilgangBlock)
     }
 
     suspend fun vedTilgangTilPersonUtenOppslagslogg(
         ident: String,
         token: String,
+        /**
+         *  Rutemal hos klienten som startet oppslaget. Bruk {parameter} for dynamiske segmenter.
+         *  Ikke ta med query-parametere eller konkrete identifikatorer.
+         */
+        originRoute: String? = null,
         vedTilgangBlock: suspend () -> Unit,
     ) {
-        vedTilgangTilPerson(ident, token, oppslagslogg = false, vedTilgangBlock)
+        vedTilgangTilPerson(ident, token, oppslagslogg = false, originRoute = originRoute, vedTilgangBlock)
     }
 
     private suspend fun vedTilgangTilPerson(
         ident: String,
         token: String,
         oppslagslogg: Boolean,
+        originRoute: String? = null,
         vedTilgangBlock: suspend () -> Unit,
     ) {
+        requireValidOriginRoute(originRoute)
+
         try {
             val oboToken = oboExchanger(token)
             val identForesporsel =
@@ -69,6 +86,7 @@ class StPeterPlugin(
                     "ident" to ident,
                     "oppslagslogg" to oppslagslogg,
                     "application" to config.appName,
+                    "originRoute" to originRoute,
                 )
             val request =
                 HttpRequest
@@ -118,6 +136,25 @@ class StPeterPlugin(
                 instance = URI("$url/api/v1/person"),
                 title = "En ukjent feil oppstod ved evaluering av tilgang",
             )
+        }
+    }
+
+    private fun requireValidOriginRoute(originRoute: String?) {
+        if (originRoute == null) return
+
+        require(
+            originRoute.length in 2..MAX_ORIGIN_ROUTE_LENGTH &&
+                originRoute.startsWith("/") &&
+                originRoute
+                    .removePrefix("/")
+                    .split("/")
+                    .all { segment ->
+                        ROUTE_SEGMENT_PATTERN.matches(segment) &&
+                            segment != "." &&
+                            segment != ".."
+                    },
+        ) {
+            "originRoute må være en rutemal uten query-parametere eller konkrete identifikatorer"
         }
     }
 

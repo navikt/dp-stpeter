@@ -3,6 +3,7 @@ package no.nav.dagpenger.stpeter
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.callid.callId
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.request.receive
@@ -15,6 +16,7 @@ import no.nav.dagpenger.api.auth.AuthFactory
 import no.nav.dagpenger.api.authenticationConfig
 import no.nav.dagpenger.api.models.IdentForesporsel
 import no.nav.dagpenger.api.token
+import no.nav.dagpenger.hasValidLogMetadata
 import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinClient
 import no.nav.dagpenger.tilgangsmaskin.TilgangsmaskinResponseService
 
@@ -38,6 +40,9 @@ internal fun Application.stpeterApi(
             authenticate("azureAd") {
                 post("/person") {
                     val identForesporsel = call.receive<IdentForesporsel>()
+                    if (!identForesporsel.hasValidLogMetadata()) {
+                        throw BadRequestException("application eller originRoute har ugyldig format")
+                    }
 
                     tilgangsmaskinResponseService.evaluerTilgangTilPersonKomplett(
                         identForesporsel = identForesporsel,

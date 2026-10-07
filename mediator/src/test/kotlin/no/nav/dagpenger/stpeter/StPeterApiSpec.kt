@@ -47,7 +47,7 @@ class StPeterApiSpec :
                             testAzureAdToken(
                                 navIdent = "Z123456",
                             )
-                        sjekkTilgang(token, IDENT_MED_TILGANG).apply {
+                        sjekkTilgang(token, IDENT_MED_TILGANG, "/api/v1/person/{ident}").apply {
                             status.value shouldBe 204
                             val bodyAsText = bodyAsText()
                             bodyAsText.isEmpty() shouldBeEqual true
@@ -56,7 +56,7 @@ class StPeterApiSpec :
                             tilgangsmaskinClient.utfallCount("success") shouldBe 1.0
                         }
 
-                        sjekkTilgang(token, IDENT_MED_TILGANG).apply {
+                        sjekkTilgang(token, IDENT_MED_TILGANG, "/api/v1/person/{ident}").apply {
                             status.value shouldBe 204
                             val bodyAsText = bodyAsText()
                             bodyAsText.isEmpty() shouldBeEqual true
@@ -269,24 +269,44 @@ class StPeterApiSpec :
                 }
             }
         }
+
+        "skal avvise originRoute med query-parametere eller identifikator" {
+            StPeterSystem.godkjentScenario().test(redis) {
+                withMockAuthServerAndTestApplication(this.api) {
+                    val token = testAzureAdToken(navIdent = "Z123456")
+
+                    listOf(
+                        "/api/v1/person/{ident}?mode=full",
+                        "/api/v1/person/12345678901",
+                        "/api/v1/person/123456",
+                        "/api/v1/person/id-123456",
+                    ).forEach { route ->
+                        sjekkTilgang(token, IDENT_MED_TILGANG, route).apply {
+                            status.value shouldBe 400
+                        }
+                    }
+                }
+            }
+        }
     })
 
 private suspend fun TestContext.sjekkTilgang(
     token: String?,
     ident: String,
+    originRoute: String? = null,
 ): HttpResponse =
     client
         .post {
             url("/api/v1/person")
             setBody(
-                // language=JSON
-                """
-                {
-                "ident": "$ident",
-                "oppslagslogg": true,
-                "application": "test"
-                }
-                """.trimIndent(),
+                objectMapper.writeValueAsString(
+                    buildMap<String, Any> {
+                        put("ident", ident)
+                        put("oppslagslogg", true)
+                        put("application", "test")
+                        originRoute?.let { put("originRoute", it) }
+                    },
+                ),
             )
             this.header(HttpHeaders.Authorization, "Bearer $token")
             this.header(HttpHeaders.Accept, "application/problem+json")

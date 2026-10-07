@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 
 class TeamLogg private constructor(
     name: String,
-    private val context: Map<String, String>,
+    private val context: Map<String, String?>,
 ) {
     constructor(forClass: KClass<*>? = null) : this(
         name = forClass?.let { "tjenestekall.${it.simpleName}" } ?: "tjenestekall",
@@ -16,24 +16,24 @@ class TeamLogg private constructor(
     private val logger = KotlinLogging.logger(name)
 
     fun info(
-        vararg context: Pair<String, String>,
+        vararg context: Pair<String, String?>,
         message: () -> String,
     ) = log(context, message, logger::info)
 
     fun warn(
-        vararg context: Pair<String, String>,
+        vararg context: Pair<String, String?>,
         cause: Throwable? = null,
         message: () -> String,
     ) = log(context, message) { logger.warn(cause, it) }
 
     fun error(
-        vararg context: Pair<String, String>,
+        vararg context: Pair<String, String?>,
         cause: Throwable? = null,
         message: () -> String,
     ) = log(context, message) { logger.error(cause, it) }
 
     private fun log(
-        callContext: Array<out Pair<String, String>>,
+        callContext: Array<out Pair<String, String?>>,
         message: () -> String,
         emit: (() -> Any?) -> Unit,
     ) {
@@ -50,12 +50,12 @@ class TeamLogg private constructor(
      * andre loggere.
      */
     fun <T> withContext(
-        vararg context: Pair<String, String>,
+        vararg context: Pair<String, String?>,
         block: TeamLogg.() -> T,
     ): T = TeamLogg(logger.name, this.context + context).block()
 
     suspend fun <T> withContextAsync(
-        vararg context: Pair<String, String>,
+        vararg context: Pair<String, String?>,
         block: suspend TeamLogg.() -> T,
     ): T = TeamLogg(logger.name, this.context + context).block()
 }

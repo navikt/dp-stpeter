@@ -25,7 +25,6 @@ internal fun Application.authenticationConfig(authFactory: AuthFactory) {
     }
 
     install(CallId) {
-        header("callId")
         verify { it.isNotEmpty() }
         generate { UUIDv7.ny().toString() }
     }
