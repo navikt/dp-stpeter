@@ -45,6 +45,10 @@ server. The plugin has a separate publish workflow.
 For Kotlin test patterns, see `.github/instructions/testing-kotlin.instructions.md`. For security-sensitive Kotlin
 changes, see `.github/instructions/security-owasp.instructions.md`.
 
+## Commit messages
+
+When asked to create a commit message, inspect the staged diff and follow `.github/commit-instructions.md`. Write the description and body in Norwegian Bokmål. Keep Conventional Commits types, scopes, and the `BREAKING CHANGE:` footer in their standard English form.
+
 ## Purpose of StPeter
 
 StPeter er en proxy/tilgangskontroll-tjeneste som håndterer tilgangssjekk mot tilgangsmaskin for saksbehandlere som
