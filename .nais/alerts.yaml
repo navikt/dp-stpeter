@@ -1,0 +1,25 @@
+apiVersion: nais.io/v1
+kind: Alert
+metadata:
+  name: dp-stpeter-alerts
+  namespace: teamdagpenger
+  labels:
+    team: teamdagpenger
+spec:
+  receivers:
+    slack:
+      channel: "{{ alert_channel }}"
+      prependText: "@here "
+  alerts:
+    - alert: DpStpeterTilgangsmaskinIOError
+      expr: increase(tilgangsmaskin_call_total{namespace="teamdagpenger",app="dp-stpeter",outcome="io_error"}[10m]) > 0
+      for: 5m
+      description: dp-stpeter mister kontakt med tilgangsmaskin (IOException/timeout ved kall til populasjonstilgangskontroll).
+      action: Sjekk nettverk/DNS mot populasjonstilgangskontroll.tilgangsmaskin og om tilgangsmaskin selv er nede. Se "tjenestekall"-logg for detaljer.
+      severity: warning
+    - alert: DpStpeterTilgangsmaskinServerError
+      expr: increase(tilgangsmaskin_call_total{namespace="teamdagpenger",app="dp-stpeter",outcome="server_error"}[10m]) > 0
+      for: 5m
+      description: tilgangsmaskin svarer med 5xx-feil på kall fra dp-stpeter.
+      action: Sjekk status og logger for populasjonstilgangskontroll i tilgangsmaskin-namespace.
+      severity: warning

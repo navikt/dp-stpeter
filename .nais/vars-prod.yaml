@@ -1,0 +1,11 @@
+ingresses:
+  - https://dp-stpeter.intern.nav.no
+
+azure:
+  tenant: nav.no
+  grupper:
+    saksbehandler: "2e9c63d8-322e-4c1f-b500-a0abb812761c" # 0000-GA-Dagpenger-Saksbehandler
+
+wonderwalled: true
+
+tilgangsmaksinApiScope: "api://prod-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default"
