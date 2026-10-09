@@ -5,7 +5,7 @@ plugins {
 }
 dependencies {
 
-    val dpBibliotekerVersion = "2026.10.09-06.25.ab1ddcc5ba08"
+    val dpBibliotekerVersion = "2026.10.09-12.23.1525536141d8"
 
     implementation(libs.bundles.ktor.server)
     implementation(libs.mock.oauth2.server)
