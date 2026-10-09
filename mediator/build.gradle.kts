@@ -7,7 +7,7 @@ plugins {
 
 dependencies {
 
-    val dpBibliotekerVersion = "2026.10.08-18.23.f84047ea6970"
+    val dpBibliotekerVersion = "2026.10.09-06.25.ab1ddcc5ba08"
 
     implementation(project(path = ":konfigurasjon"))
     implementation(project(path = ":openapi"))
