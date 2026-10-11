@@ -9,7 +9,7 @@ metadata:
 
 # Conventional Commit Skill
 
-Generate commit messages following the Conventional Commits specification, adapted for Nav projects.
+Generate Norwegian Bokmål commit messages following the Conventional Commits specification, adapted for Nav projects.
 
 ## Format
 
@@ -39,55 +39,58 @@ Generate commit messages following the Conventional Commits specification, adapt
 ## Nav-relevant scopes
 
 ```
-feat(vedtak): add support for complaint decisions
-fix(auth): fix token validation for TokenX
-docs(api): update OpenAPI spec for the vedtak endpoint
-refactor(repository): use CTE for better readability
-test(controller): add integration test with MockOAuth2Server
-build(deps): upgrade Spring Boot to 3.4.1
-ci(deploy): add prod deploy step
-perf(db): add index on bruker_id
-chore(nais): update resource limits
+feat(vedtak): støtt klagevedtak
+fix(auth): valider TokenX-token
+docs(api): oppdater OpenAPI-spesifikasjonen
+refactor(repository): bruk CTE for tydeligere spørringer
+test(controller): legg til integrasjonstest med MockOAuth2Server
+build(deps): oppgrader Spring Boot
+ci(deploy): legg til prod-deploy
+perf(db): legg til indeks på bruker_id
+chore(nais): oppdater ressursgrenser
 ```
 
 ## Breaking Changes
 
 ```
-feat(api)!: change response format for the vedtak endpoint
+feat(api)!: endre svarformat for vedtaksendepunktet
 
-BREAKING CHANGE: The `vedtakDato` field has been changed to `opprettetDato`.
-Consumers must update their parsing.
+BREAKING CHANGE: Feltet `vedtakDato` er endret til `opprettetDato`.
+Konsumenter må oppdatere innlesingen.
 ```
 
 ## Rules
 
 - First line: max 72 characters
-- Use imperative form: "add", not "added" or "adds"
+- Use Norwegian Bokmål for the description and body
+- Keep the Conventional Commits type and scope in English
+- Use imperative form in the description: "legg til", not "la til"
 - Don't end with a period
-- Use Norwegian or English consistently within the project
-- Reference Jira/GitHub issue in footer: `Closes #123` or `Refs NAV-1234`
+- First line should be at most 72 characters
+- Keep the standard `BREAKING CHANGE:` footer in English
+- Reference Jira/GitHub issues in the footer when appropriate: `Refs NAV-1234`
 
 ## Examples
 
 ```bash
 # Simple feature
-git commit -m "feat(søknad): add validation of national identity number"
+git commit -m "feat(søknad): valider fødselsnummer"
 
 # Bugfix with reference
-git commit -m "fix(auth): handle expired refresh token
+git commit -m "fix(auth): forny utløpt refresh-token
 
-The refresh token was not renewed upon expiration, which caused
-users to be logged out without warning.
+Forny tokenet når det utløper, slik at brukeren ikke mister
+tilgangen uten varsel.
 
-Fixes #456"
+Refs #456"
 
 # Dependency update
-git commit -m "build(deps): upgrade postgresql driver to 42.7.4"
+git commit -m "build(deps): oppgrader PostgreSQL-driveren til 42.7.4"
 
 # Breaking change
-git commit -m "feat(api)!: remove deprecated /api/v1/vedtak endpoint
+git commit -m "feat(api)!: fjern det utgåtte /api/v1/vedtak-endepunktet
 
-BREAKING CHANGE: /api/v1/vedtak has been removed. Use /api/v2/vedtak."
+BREAKING CHANGE: /api/v1/vedtak er fjernet. Bruk /api/v2/vedtak."
 ```
 
 ## Analyzing Staged Changes
