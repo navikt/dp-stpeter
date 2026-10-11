@@ -1,9 +1,9 @@
 {
   "collection": "nav-pilot",
-  "version": "2026.09.07-074612-5c0c44d",
+  "version": "2026.10.10-231728-7f8baad",
   "scope": "repo",
   "source_repo": "navikt/copilot",
-  "source_sha": "970f8113d350e42bced803ee59dec92382e14d5b",
+  "source_sha": "8d2b7ebd224442c243d70848eeabbd0fe459c74a",
   "installed_at": "2026-09-07T10:44:35Z",
   "files": [
     {
@@ -16,7 +16,8 @@
     },
     {
       "path": ".github/agents/code-review.agent.md",
-      "hash": "5a019cbf3eda9ce2"
+      "hash": "811b2a6765ff86de",
+      "revision": "8d2b7ebd224442c243d70848eeabbd0fe459c74a"
     },
     {
       "path": ".github/agents/forfatter.agent.md",
@@ -32,7 +33,8 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "c2ec92805bae041b"
+      "hash": "8c6cbe9101b541c5",
+      "revision": "8d2b7ebd224442c243d70848eeabbd0fe459c74a"
     },
     {
       "path": ".github/agents/research.agent.md",
@@ -40,15 +42,25 @@
     },
     {
       "path": ".github/agents/rust.agent.md",
-      "hash": "f915a28c049a0f64"
+      "hash": "e1cb55806cd87d8c",
+      "revision": "8d2b7ebd224442c243d70848eeabbd0fe459c74a"
     },
     {
       "path": ".github/agents/security-champion.agent.md",
-      "hash": "09850437ed89c7bb"
+      "hash": "65fed295fcdd5bd1",
+      "revision": "8d2b7ebd224442c243d70848eeabbd0fe459c74a"
+    },
+    {
+      "path": ".github/agents/worker.agent.md",
+      "hash": "43c860f99cd1337e"
     },
     {
       "path": ".github/hooks/ask-first-aria.py",
       "hash": "41be8eec026b7bb1"
+    },
+    {
+      "path": ".github/hooks/gh-poll-gate.py",
+      "hash": "7b144af18aef7c2f"
     },
     {
       "path": ".github/hooks/klarsprak-gate.py",
@@ -79,6 +91,10 @@
       "hash": "49ac99c6740220c6"
     },
     {
+      "path": ".github/instructions/kotlin.instructions.md",
+      "hash": "b5a426974a5e4ab6"
+    },
+    {
       "path": ".github/instructions/nextjs-aksel.instructions.md",
       "hash": "342cce96431f6ca5"
     },
@@ -93,6 +109,10 @@
     {
       "path": ".github/instructions/performance.instructions.md",
       "hash": "cde5b75a73890cbc"
+    },
+    {
+      "path": ".github/instructions/security-core.instructions.md",
+      "hash": "5f9b18a450d64fe7"
     },
     {
       "path": ".github/instructions/security-owasp.instructions.md",
@@ -156,7 +176,12 @@
     },
     {
       "path": ".github/skills/conventional-commit/",
-      "hash": "0c21beaedabd1e39"
+      "hash": "0c21beaedabd1e39",
+      "revision": "8d2b7ebd224442c243d70848eeabbd0fe459c74a"
+    },
+    {
+      "path": ".github/skills/deliberate-ai-use/",
+      "hash": "81fe98e25424c81c"
     },
     {
       "path": ".github/skills/flyway-migration/",
@@ -204,7 +229,8 @@
     },
     {
       "path": ".github/skills/nav-dekoratoren/",
-      "hash": "36a286dece9e2c63"
+      "hash": "4b5d432477529d66",
+      "revision": "8d2b7ebd224442c243d70848eeabbd0fe459c74a"
     },
     {
       "path": ".github/skills/nav-plan/",
