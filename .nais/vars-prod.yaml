@@ -8,4 +8,6 @@ azure:
 
 wonderwalled: true
 
+environment: prod
+
 tilgangsmaksinApiScope: "api://prod-gcp.tilgangsmaskin.populasjonstilgangskontroll/.default"

@@ -85,7 +85,7 @@ spec:
       rules:
         - application: dp-migrering
           namespace: teamdagpenger
-          cluster: dev-fss
+          cluster: "{{environment}}-fss"
         {{#if wonderwalled}}
         - application: azure-token-generator
           namespace: nais
