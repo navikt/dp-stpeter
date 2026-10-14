@@ -30,7 +30,7 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:1.6.5")
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
-    implementation("io.lettuce:lettuce-core:7.8.0.RELEASE")
+    implementation("io.lettuce:lettuce-core:7.9.0.RELEASE")
 
     implementation(libs.bundles.ktor.client)
     implementation(libs.bundles.ktor.server)
