@@ -47,7 +47,7 @@ jobs:
     needs: [ build ]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: dev-fss
+    environment: dev-gcp
     permissions:
       contents: "read"
       id-token: "write"
