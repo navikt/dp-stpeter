@@ -4,7 +4,7 @@ plugins {
     id("publish-lib")
 }
 dependencies {
-    val dpBibliotekerVersion = "2026.10.15-12.21.08e956f76dd5"
+    val dpBibliotekerVersion = "2026.10.15-18.29.4e256bf96fe2"
 
     implementation(libs.bundles.ktor.client)
     implementation("no.nav.dagpenger:ktor-client-metrics:$dpBibliotekerVersion")
