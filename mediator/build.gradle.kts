@@ -25,7 +25,7 @@ dependencies {
     implementation(libs.konfig)
     implementation(libs.kotlin.logging)
     implementation("io.prometheus:prometheus-metrics-core:1.10.0")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.17.1")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.17.2")
     implementation("org.slf4j:slf4j-api:2.0.20")
 
     implementation("ch.qos.logback:logback-classic:1.6.5")
