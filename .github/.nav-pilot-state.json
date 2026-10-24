@@ -1,9 +1,9 @@
 {
   "collection": "nav-pilot",
-  "version": "2026.10.10-231728-7f8baad",
+  "version": "2026.10.23-214925-f431a28",
   "scope": "repo",
   "source_repo": "navikt/copilot",
-  "source_sha": "8d2b7ebd224442c243d70848eeabbd0fe459c74a",
+  "source_sha": "f431a286d9a8006639ca768df74a7d18d5b4351d",
   "installed_at": "2026-09-07T10:44:35Z",
   "files": [
     {
@@ -33,8 +33,8 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "8c6cbe9101b541c5",
-      "revision": "8d2b7ebd224442c243d70848eeabbd0fe459c74a"
+      "hash": "1b67c4cd0ebd73aa",
+      "revision": "f431a286d9a8006639ca768df74a7d18d5b4351d"
     },
     {
       "path": ".github/agents/research.agent.md",
@@ -52,19 +52,23 @@
     },
     {
       "path": ".github/agents/worker.agent.md",
-      "hash": "43c860f99cd1337e"
+      "hash": "8ca54845d3fa2a73",
+      "revision": "f431a286d9a8006639ca768df74a7d18d5b4351d"
     },
     {
       "path": ".github/hooks/ask-first-aria.py",
-      "hash": "41be8eec026b7bb1"
+      "hash": "fc5c399249a5d7b2",
+      "revision": "f431a286d9a8006639ca768df74a7d18d5b4351d"
     },
     {
       "path": ".github/hooks/gh-poll-gate.py",
-      "hash": "7b144af18aef7c2f"
+      "hash": "72b72d28f9ec16bf",
+      "revision": "f431a286d9a8006639ca768df74a7d18d5b4351d"
     },
     {
       "path": ".github/hooks/klarsprak-gate.py",
-      "hash": "ecc2bc6b2d637131"
+      "hash": "c2155ad041f460fd",
+      "revision": "f431a286d9a8006639ca768df74a7d18d5b4351d"
     },
     {
       "path": ".github/instructions/accessibility.instructions.md",
@@ -76,7 +80,8 @@
     },
     {
       "path": ".github/instructions/deliberate-ai-use.instructions.md",
-      "hash": "5e2d7a2f23285de8"
+      "hash": "c323e57324694374",
+      "revision": "f431a286d9a8006639ca768df74a7d18d5b4351d"
     },
     {
       "path": ".github/instructions/docker.instructions.md",
@@ -175,13 +180,22 @@
       "hash": "a353aded69a4bd4c"
     },
     {
+      "path": ".github/skills/appsec-advisory/",
+      "hash": "47dc8fb85cebb2bb"
+    },
+    {
       "path": ".github/skills/conventional-commit/",
       "hash": "0c21beaedabd1e39",
       "revision": "8d2b7ebd224442c243d70848eeabbd0fe459c74a"
     },
     {
       "path": ".github/skills/deliberate-ai-use/",
-      "hash": "81fe98e25424c81c"
+      "hash": "c329412b61d8f8c1",
+      "revision": "f431a286d9a8006639ca768df74a7d18d5b4351d"
+    },
+    {
+      "path": ".github/skills/dependency-upgrade/",
+      "hash": "03b9bf451939b567"
     },
     {
       "path": ".github/skills/flyway-migration/",
@@ -201,7 +215,8 @@
     },
     {
       "path": ".github/skills/klarsprak/",
-      "hash": "28545e8d5ed779fe"
+      "hash": "618a0dbf98be8b11",
+      "revision": "f431a286d9a8006639ca768df74a7d18d5b4351d"
     },
     {
       "path": ".github/skills/kotlin-app-config/",
