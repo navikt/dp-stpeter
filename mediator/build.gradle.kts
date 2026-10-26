@@ -28,7 +28,7 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:1.17.2")
     implementation("org.slf4j:slf4j-api:2.0.20")
 
-    implementation("ch.qos.logback:logback-classic:1.6.5")
+    implementation("ch.qos.logback:logback-classic:1.6.6")
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
     implementation("io.lettuce:lettuce-core:7.9.0.RELEASE")
 
