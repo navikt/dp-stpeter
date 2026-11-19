@@ -6,7 +6,7 @@ plugins {
 dependencies {
     implementation(libs.kotlin.logging)
     implementation("org.slf4j:slf4j-api:2.0.20")
-    implementation("ch.qos.logback:logback-classic:1.6.7")
+    implementation("ch.qos.logback:logback-classic:1.6.8")
     implementation("net.logstash.logback:logstash-logback-encoder:9.0")
     implementation("no.nav.common:audit-log:4.2026.11.16_22.46-d9033252accf")
 
