@@ -59,7 +59,7 @@ dependencies {
     testImplementation(libs.ktor.client.mock)
     testImplementation("io.ktor:ktor-server-test-host-jvm:${libs.versions.ktor.get()}")
     testImplementation("io.ktor:ktor-client-content-negotiation:${libs.versions.ktor.get()}")
-    testImplementation("com.approvaltests:approvaltests:31.1.0")
+    testImplementation("com.approvaltests:approvaltests:31.3.0")
     testImplementation("com.tngtech.archunit:archunit-junit5:1.5.1")
     testImplementation("com.redis:testcontainers-redis:3.0.1")
     testImplementation("org.testcontainers:testcontainers:2.0.5")
