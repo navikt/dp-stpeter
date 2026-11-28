@@ -1,6 +1,6 @@
 ---
 name: klarsprak
-description: "Redigér og kvalitetssikre norsk tekst: klarspråk, fjerning av KI-markører, anglisismer, fagtermer og nynorsk/svensk-innblanding. Bruk denne skillen hver gang du skriver, redigerer eller språkvasker norsk tekst — README-er, ADR-er, UI-tekst, blogginnlegg, dokumentasjon, e-poster, commit-meldinger og PR-beskrivelser — også når brukeren ikke sier «klarspråk» eksplisitt, men bare ber om hjelp med norsk tekst."
+description: "Redigér og kvalitetssikre norsk tekst som havner i en fil eller blir publisert: README-er, dokumentasjon, ADR-er, UI-tekst, nettsider, nyhetssaker, e-poster, commit-meldinger og PR- og issue-beskrivelser. Bruk den også når brukeren limer inn norsk tekst og ber om språkvask eller korrektur. Dekker klarspråk, KI-markører, anglisismer, fagtermer og nynorsk/svensk-innblanding. Ikke bruk den for vanlige chatsvar, heller ikke når svaret er på norsk eller forklarer hvordan kode virker."
 license: "MIT"
 ---
 
@@ -158,7 +158,7 @@ Abstrakte metafor-substantiv: «substrat», «vektor», «paradigme», «nordstj
 
 ## Tegnsetting og formatering
 
-- Ikke bruk tankestrek (—) i prosa. Bruk kolon, komma, parentes eller en ny setning.
+- Ikke bruk tankestrek (—) i prosa et menneske leser: dokumentasjon, README-er, sidetekst og CLI-meldinger. Bruk kolon, komma, parentes eller en ny setning. Kode, tabeller og genererte filer er unntatt.
 - Overskrifter slutter aldri med kolon. Ellers er kolon greit før liste eller eksempel, ikke som setningslim midt i setninger. Kolon i hvert eneste kulepunkt er et KI-tegn.
 - Ikke bruk semikolon unaturlig ofte.
 - Dropp utropstegn i teknisk tekst.
@@ -182,11 +182,11 @@ Ikke oversett engelske tekniske termer som er etablert i norsk fagspråk:
 - edge case (ikke «grensetilfelle»), bug (ikke «feil» alene), bugfix, hotfix, patch
 - roadmap (ikke «veikart»), governance, community (i open source-kontekst)
 - pipeline, workflow, runtime, framework, middleware
-- pull request, merge, commit, branch, rebase
+- pull request, merge (ikke «slått sammen», «sammenslått» eller «flettet»; bøyes merget, mergede), commit, branch (ikke «gren»), rebase
 - endpoint, payload, token, scope, host (ikke «vert» eller «vertsnavn»)
 - skill (ikke «ferdighet»), hook (ikke «krok»), prompt (ikke «ledetekst»)
 
-«Host» står på engelsk i enhver teknisk betydning, maskinen like mye som endepunktet. «Vert» sier ikke hvilken av dem det er, og leseren må gjette mellom maskin, HTTP-host og hypervisor. Det gjelder også sammensetningene: «vertsnavn», «vertsliste» og «vertssystem» blir host, host-liste og host-system.
+«Host» står på engelsk i enhver teknisk betydning, maskinen like mye som endepunktet. «Vert» sier ikke hvilken av dem det er, og leseren må gjette mellom maskin, HTTP-host og hypervisor. Det gjelder også sammensetningene: «vertsnavn», «vertsliste» og «vertssystem» blir hostnavn, hostliste og hostsystem.
 
 ### Norsk er OK for
 
@@ -196,12 +196,12 @@ feilsøking, oppgradering, sikkerhetskrav, vedlikehold, driftsarbeid, bidragsyte
 
 ### Sammensatte ord med engelske termer
 
-Bruk bindestrek — særskriving er feil:
+Skriv sammensatte ord i ett ord. Bruk bindestrek bare ved forkortelser, tall og egennavn, eller når ordet ellers blir uleselig. Særskriving er feil:
 
 ```
-✅ image-bygg, CI-pipeline, deploy-steg, CLI-brukere, PR-er
+✅ imagebygg, deploysteg, CI-pipeline, CLI-brukere, PR-er
 ✅ Postgres-operatoren, Kafka-topicet, GitHub-repoet
-❌ Postgres operatoren, Kafka topicet, GitHub repoet
+❌ image-bygg, deploy-steg, Postgres operatoren, Kafka topicet, GitHub repoet
 ```
 
 ## Anglisismer
@@ -350,7 +350,7 @@ Følg Designsystemets retningslinjer for tekst i digitale tjenester:
 ### ✅ Alltid
 
 - Det viktigste først, aktiv form, konkret språk
-- Behold etablerte engelske fagtermer og bindestrek i sammensatte ord
+- Behold etablerte engelske fagtermer, og skriv sammensatte ord i ett ord (bindestrek bare ved forkortelser, tall, egennavn eller når ordet ellers blir uleselig)
 - Konsekvent formvalg gjennom hele teksten
 - Behold kode-literals, API-felter, IDer, enum-verdier og testforventninger uendret
 
